@@ -2,7 +2,7 @@ import requests
 
 
 class XMRig:
-    def __init__(self, ip, port, access_token: str = None):
+    def __init__(self, port, ip:str="127.0.0.1", access_token: str = None):
         self._ip = ip
         self._port = port
         self._access_token = access_token
@@ -20,7 +20,7 @@ class XMRig:
             headers['Authorization'] = f"Bearer {self._access_token}"
         return headers
 
-    def fetch_summary(self):
+    def return_summary(self):
         headers = self._get_headers()
         try:
             response = requests.get(self._summary_url, headers=headers)
