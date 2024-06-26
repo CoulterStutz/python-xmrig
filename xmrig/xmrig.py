@@ -48,3 +48,10 @@ class XMRig:
         if summary and "Hashrate" in summary:
             self._hashrate = summary["Hashrate"]["total"][0]
         return self._hashrate
+
+    @property
+    def uptime(self):
+        summary = self.fetch_summary()
+        if summary and "uptime" in summary:
+            self._uptime = summary["uptime"]
+        return self._uptime
