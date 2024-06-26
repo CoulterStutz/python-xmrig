@@ -1,8 +1,9 @@
 import requests
+from datetime import timedelta
 
 
 class XMRig:
-    def __init__(self, port, ip:str="127.0.0.1", access_token: str = None):
+    def __init__(self, ip, port, access_token: str = None):
         self._ip = ip
         self._port = port
         self._access_token = access_token
@@ -20,7 +21,7 @@ class XMRig:
             headers['Authorization'] = f"Bearer {self._access_token}"
         return headers
 
-    def return_summary(self):
+    def fetch_summary(self):
         headers = self._get_headers()
         try:
             response = requests.get(self._summary_url, headers=headers)
@@ -64,3 +65,59 @@ class XMRig:
         if summary and "paused" in summary:
             self._paused = summary["paused"]
         return self._paused
+
+    @property
+    def total_hashes(self):
+        summary = self.fetch_summary()
+        if summary and "results" in summary:
+            return summary["results"]["hashes_total"]
+        return None
+
+    @property
+    def current_difficulty(self):
+        summary = self.fetch_summary()
+        if summary and "results" in summary:
+            return summary["results"]["diff_current"]
+        return None
+
+    @property
+    def pool_info(self):
+        summary = self.fetch_summary()
+        if summary and "connection" in summary:
+            return summary["connection"]["pool"]
+        return None
+
+    @property
+    def cpu_info(self):
+        summary = self.fetch_summary()
+        if summary and "cpu" in summary:
+            return summary["cpu"]
+        return None
+
+    @property
+    def version(self):
+        summary = self.fetch_summary()
+        if summary and "version" in summary:
+            return summary["version"]
+        return None
+
+    @property
+    def uptime_readable(self):
+        summary = self.fetch_summary()
+        if summary and "uptime" in summary:
+            return str(timedelta(seconds=summary["uptime"]))
+        return None
+
+    @property
+    def memory_usage(self):
+        summary = self.fetch_summary()
+        if summary and "resources" in summary and "memory" in summary["resources"]:
+            return summary["resources"]["memory"]
+        return None
+
+    @property
+    def load_average(self):
+        summary = self.fetch_summary()
+        if summary and "resources" in summary and "load_average" in summary["resources"]:
+            return summary["resources"]["load_average"]
+        return None
