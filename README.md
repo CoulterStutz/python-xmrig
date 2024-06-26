@@ -5,3 +5,20 @@
 ![License](https://img.shields.io/github/license/CoulterStutz/python-xmrig?label=License&color=brightgreen)
 
 A wrapper for the XMRig HTTP API
+
+## Changelog
+### 1.0.1
+* Added the following properties
+  * hashrate
+  * uptime
+  * accepted_jobs
+  * rejected_jobs
+  * paused
+  * total_hashes
+  * current_difficulty
+  * pool_info
+  * cpu_info
+  * version
+  * uptime_readable
+  * memory_usage
+  * load_average
