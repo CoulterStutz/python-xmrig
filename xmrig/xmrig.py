@@ -55,3 +55,17 @@ class XMRig:
         if summary and "uptime" in summary:
             self._uptime = summary["uptime"]
         return self._uptime
+
+    @property
+    def accepted_jobs(self):
+        summary = self.fetch_summary()
+        if summary and "connection" in summary:
+            self._accepted_jobs = summary["connection"]["accepted"]
+        return self._accepted_jobs
+
+    @property
+    def rejected_jobs(self):
+        summary = self.fetch_summary()
+        if summary and "connection" in summary:
+            self._rejected_jobs = summary["connection"]["rejected"]
+        return self._rejected_jobs
