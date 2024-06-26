@@ -2,6 +2,14 @@ import requests
 from datetime import timedelta
 
 
+class XMRigAuthorizationError(Exception):
+    """Custom exception to handle XMRig authorization errors."""
+
+    def __init__(self, message="Access token is required but not provided. Please provide a valid access token."):
+        self.message = message
+        super().__init__(self.message)
+
+
 class XMRig:
     def __init__(self, ip, port, access_token: str = None):
         self._ip = ip
@@ -25,6 +33,8 @@ class XMRig:
         headers = self._get_headers()
         try:
             response = requests.get(self._summary_url, headers=headers)
+            if response.status_code == 401:
+                raise XMRigAuthorizationError()
             response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
             return response.json()
         except requests.exceptions.RequestException as e:
