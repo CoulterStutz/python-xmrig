@@ -3,8 +3,8 @@ class XMRig:
         self._ip = ip
         self._port = port
         self._access_token = access_token
+        
         self._base_url = f"http://{ip}:{port}/2"
-
         self._summary_url = f"{self._base_url}/summary"
         self._stats_url = f"{self._base_url}/stats"
         self._config_url = f"{self._base_url}/config"
@@ -15,3 +15,4 @@ class XMRig:
         self._results_url = f"{self._base_url}/results"
         self._connections_url = f"{self._base_url}/connections"
         self._threads_url = f"{self._base_url}/threads"
+
