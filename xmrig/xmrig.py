@@ -73,6 +73,66 @@ class XMRig:
             print(f"An error occurred while connecting to {self._summary_url}: {e}")
             return None
 
+    def pause_miner(self):
+        """
+        Pauses the miner.
+
+        Returns:
+            bool: True if the miner was successfully paused, False otherwise.
+        """
+        headers = self._get_headers()
+        try:
+            response = requests.post(self._pause_url, headers=headers)
+            response.raise_for_status()
+            return True
+        except requests.exceptions.RequestException as e:
+            return False
+
+    def resume_miner(self):
+        """
+        Resumes the miner.
+
+        Returns:
+            bool: True if the miner was successfully resumed, False otherwise.
+        """
+        headers = self._get_headers()
+        try:
+            response = requests.post(self._resume_url, headers=headers)
+            response.raise_for_status()
+            return True
+        except requests.exceptions.RequestException as e:
+            return False
+
+    def restart_miner(self):
+        """
+        Restarts the miner.
+
+        Returns:
+            bool: True if the miner was successfully restarted, False otherwise.
+        """
+        headers = self._get_headers()
+        try:
+            response = requests.post(self._restart_url, headers=headers)
+            response.raise_for_status()
+            return True
+        except requests.exceptions.RequestException as e:
+            return False
+
+    def stop_miner(self):
+        """
+        Stops the miner.
+
+        Returns:
+            bool: True if the miner was successfully stopped, False otherwise.
+        """
+        headers = self._get_headers()
+        try:
+            response = requests.post(self._stop_url, headers=headers)
+            response.raise_for_status()
+            return True
+        except requests.exceptions.RequestException as e:
+            return False
+
     @property
     def hashrate(self):
         """
