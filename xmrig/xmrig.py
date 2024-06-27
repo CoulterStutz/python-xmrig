@@ -1,17 +1,37 @@
 import requests
 from datetime import timedelta
 
-
 class XMRigAuthorizationError(Exception):
-    """Custom exception to handle XMRig authorization errors."""
-
     def __init__(self, message="Access token is required but not provided. Please provide a valid access token."):
         self.message = message
         super().__init__(self.message)
 
-
 class XMRig:
+    """
+    A class to interact with the XMRig miner API.
+
+    Attributes:
+        _ip (str): IP address of the XMRig API.
+        _port (int): Port of the XMRig API.
+        _access_token (str): Access token for authorization.
+        _base_url (str): Base URL for the XMRig API.
+        _summary_url (str): URL for the summary endpoint.
+        _hashrate (float): Cached hashrate value.
+        _uptime (int): Cached uptime value.
+        _accepted_jobs (int): Cached number of accepted jobs.
+        _rejected_jobs (int): Cached number of rejected jobs.
+        _paused (bool): Cached paused status of the miner.
+    """
+
     def __init__(self, ip, port, access_token: str = None):
+        """
+        Initializes the XMRig instance with the provided IP, port, and access token.
+
+        Args:
+            ip (str): IP address of the XMRig API.
+            port (int): Port of the XMRig API.
+            access_token (str, optional): Access token for authorization. Defaults to None.
+        """
         self._ip = ip
         self._port = port
         self._access_token = access_token
@@ -24,12 +44,24 @@ class XMRig:
         self._paused = None
 
     def _get_headers(self):
+        """
+        Constructs the headers for the HTTP requests, including the authorization token if provided.
+
+        Returns:
+            dict: Headers for the HTTP request.
+        """
         headers = {}
         if self._access_token:
             headers['Authorization'] = f"Bearer {self._access_token}"
         return headers
 
     def fetch_summary(self):
+        """
+        Fetches the summary data from the XMRig API.
+
+        Returns:
+            dict: Parsed JSON response from the summary endpoint, or None if an error occurred.
+        """
         headers = self._get_headers()
         try:
             response = requests.get(self._summary_url, headers=headers)
@@ -43,6 +75,12 @@ class XMRig:
 
     @property
     def hashrate(self):
+        """
+        Retrieves the current hashrate from the summary data.
+
+        Returns:
+            float: Current hashrate, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "hashrate" in summary:
             self._hashrate = summary["hashrate"]["total"][0]
@@ -50,6 +88,12 @@ class XMRig:
 
     @property
     def uptime(self):
+        """
+        Retrieves the current uptime from the summary data.
+
+        Returns:
+            int: Current uptime in seconds, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "uptime" in summary:
             self._uptime = summary["uptime"]
@@ -57,6 +101,12 @@ class XMRig:
 
     @property
     def accepted_jobs(self):
+        """
+        Retrieves the number of accepted jobs from the summary data.
+
+        Returns:
+            int: Number of accepted jobs, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "connection" in summary:
             self._accepted_jobs = summary["connection"]["accepted"]
@@ -64,6 +114,12 @@ class XMRig:
 
     @property
     def rejected_jobs(self):
+        """
+        Retrieves the number of rejected jobs from the summary data.
+
+        Returns:
+            int: Number of rejected jobs, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "connection" in summary:
             self._rejected_jobs = summary["connection"]["rejected"]
@@ -71,13 +127,25 @@ class XMRig:
 
     @property
     def miner_paused(self):
+        """
+        Retrieves the paused status of the miner from the summary data.
+
+        Returns:
+            bool: True if the miner is paused, False otherwise, or None if not available.
+        """
         summary = self.fetch_summary()
-        if summary and "miner_paused" in summary:
-            self._paused = summary["miner_paused"]
+        if summary and "paused" in summary:
+            self._paused = summary["paused"]
         return self._paused
 
     @property
     def total_hashes(self):
+        """
+        Retrieves the total number of hashes from the summary data.
+
+        Returns:
+            int: Total number of hashes, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "results" in summary:
             return summary["results"]["hashes_total"]
@@ -85,6 +153,12 @@ class XMRig:
 
     @property
     def current_difficulty(self):
+        """
+        Retrieves the current difficulty from the summary data.
+
+        Returns:
+            int: Current difficulty, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "results" in summary:
             return summary["results"]["diff_current"]
@@ -92,6 +166,12 @@ class XMRig:
 
     @property
     def pool_info(self):
+        """
+        Retrieves the pool information from the summary data.
+
+        Returns:
+            dict: Pool information, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "connection" in summary:
             return summary["connection"]["pool"]
@@ -99,6 +179,12 @@ class XMRig:
 
     @property
     def cpu_info(self):
+        """
+        Retrieves the CPU information from the summary data.
+
+        Returns:
+            dict: CPU information, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "cpu" in summary:
             return summary["cpu"]
@@ -106,6 +192,12 @@ class XMRig:
 
     @property
     def version(self):
+        """
+        Retrieves the version information from the summary data.
+
+        Returns:
+            str: Version information, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "version" in summary:
             return summary["version"]
@@ -113,6 +205,12 @@ class XMRig:
 
     @property
     def uptime_readable(self):
+        """
+        Retrieves the uptime in a human-readable format from the summary data.
+
+        Returns:
+            str: Uptime in the format "days, hours:minutes:seconds", or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "uptime" in summary:
             return str(timedelta(seconds=summary["uptime"]))
@@ -120,6 +218,12 @@ class XMRig:
 
     @property
     def memory_usage(self):
+        """
+        Retrieves the memory usage from the summary data.
+
+        Returns:
+            dict: Memory usage information, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "resources" in summary and "memory" in summary["resources"]:
             return summary["resources"]["memory"]
@@ -127,6 +231,12 @@ class XMRig:
 
     @property
     def load_average(self):
+        """
+        Retrieves the load average from the summary data.
+
+        Returns:
+            list: Load average information, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "resources" in summary and "load_average" in summary["resources"]:
             return summary["resources"]["load_average"]
@@ -134,6 +244,12 @@ class XMRig:
 
     @property
     def algorithm(self):
+        """
+        Retrieves the current mining algorithm from the summary data.
+
+        Returns:
+            str: Current mining algorithm, or None if not available.
+        """
         summary = self.fetch_summary()
         if summary and "algo" in summary:
             return summary["algo"]
