@@ -131,3 +131,10 @@ class XMRig:
         if summary and "resources" in summary and "load_average" in summary["resources"]:
             return summary["resources"]["load_average"]
         return None
+
+    @property
+    def algorithm(self):
+        summary = self.fetch_summary()
+        if summary and "algo" in summary:
+            return summary["algo"]
+        return None

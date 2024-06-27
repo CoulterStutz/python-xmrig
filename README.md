@@ -24,3 +24,6 @@ A wrapper for the XMRig HTTP API
   * load_average
 ### 1.0.2
 * Added Access Token Support
+
+### 1.0.3
+* Added property to fetch the algorithm being used
