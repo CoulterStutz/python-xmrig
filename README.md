@@ -27,3 +27,6 @@ A wrapper for the XMRig HTTP API
 
 ### 1.0.3
 * Added property to fetch the algorithm being used
+
+### 1.0.4
+* Renamed properties so that they would make more sense
