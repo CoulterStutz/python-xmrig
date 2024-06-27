@@ -70,10 +70,10 @@ class XMRig:
         return self._rejected_jobs
 
     @property
-    def paused(self):
+    def miner_paused(self):
         summary = self.fetch_summary()
-        if summary and "paused" in summary:
-            self._paused = summary["paused"]
+        if summary and "miner_paused" in summary:
+            self._paused = summary["miner_paused"]
         return self._paused
 
     @property

@@ -13,7 +13,7 @@ A wrapper for the XMRig HTTP API
   * uptime
   * accepted_jobs
   * rejected_jobs
-  * paused
+  * miner_paused
   * total_hashes
   * current_difficulty
   * pool_info
