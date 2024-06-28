@@ -4,4 +4,26 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/xmrig?label=PyPI%20Downloads)
 ![License](https://img.shields.io/github/license/CoulterStutz/python-xmrig?label=License&color=brightgreen)
 
-A wrapper for the XMRig HTTP API
+A wrapper for the XMRig HTTP API and client manager
+
+## Installing xmrig-python
+### Building From Source
+```shell
+git clone https://github.com/CoulterStutz/python-xmrig.git && cd python-xmrig
+```
+After installing from source, use poetry to install the package
+```shell
+poetry install
+```
+After that the package will be avalible to use!
+
+### Using Pip or Poetry
+#### Using Pip
+```shell
+pip install xmrig
+```
+#### Poetry
+```shell
+poetry install xmrig
+```
+
