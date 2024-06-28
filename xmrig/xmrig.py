@@ -12,6 +12,10 @@ class XMRigAPIPortError(Exception):
     def __init__(self, port):
         super().__init__(f"Unable to connect to XMRig API! {port} is not a valid port!")
 
+class XMRigPoolError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
 class PoolCoin(Enum):
     MONERO = "monero"
     WOWNERO = "wownero"
@@ -90,6 +94,11 @@ class XMRig:
                 self.API = XMRigAPI("127.0.0.1", self._http_api_port, self._http_api_token)
             else:
                 self.API = XMRigAPI("127.0.0.1", self._http_api_port)
+
+        for x in pools:
+            if type(x) is not XMRigPool:
+                raise TypeError(f"Pool {x} must be a XMRigPool instance!")
+
 
 class XMRigAPI:
     """
