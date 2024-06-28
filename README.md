@@ -27,3 +27,13 @@ pip install xmrig
 poetry install xmrig
 ```
 
+## Example Usage
+Here is a basic implementation of the API Wrapper now dubbed XMRigAPI in 1.1
+```python
+import xmrig
+x = xmrig.XMRigAPI(ip="127.0.0.1", port="5545", access_token="example")
+print(x.hashrate)  # Prints out the current hashrate
+print(x.accepted_jobs)  # Prints out the accepted_jobs counter
+print(x.rejected_jobs)  # Prints out the rejected_jobs counter
+print(x.current_difficulty)  # Prints out the current difficulty
+```
