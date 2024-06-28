@@ -128,8 +128,10 @@ class XMRig:
         return cmd
 
     def start_xmrig(self):
-        subprocess.Popen(self._generate_execution_command())
-
+        if self._config_path is not None:
+            subprocess.Popen(self._generate_execution_command())
+        else:
+            subprocess.Popen(f"{self._xmrig_path} -c {self._config_path}")
 class XMRigAPI:
     """
     A class to interact with the XMRig miner API.
