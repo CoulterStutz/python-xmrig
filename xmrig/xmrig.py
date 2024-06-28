@@ -1,7 +1,6 @@
 import os
-import random
-
-import requests
+import random, requests
+from enum import Enum
 from datetime import timedelta
 
 class XMRigAuthorizationError(Exception):
@@ -12,6 +11,37 @@ class XMRigAuthorizationError(Exception):
 class XMRigAPIPortError(Exception):
     def __init__(self, port):
         super().__init__(f"Unable to connect to XMRig API! {port} is not a valid port!")
+
+class XMRigAlgorithm(Enum):
+    RX_0 = "rx/0"  # RandomX default
+    RX_WOW = "rx/wow"  # RandomX WowNero
+    RX_LUA = "rx/lua"  # RandomX Lua
+    RX_ARQ = "rx/arq"  # RandomX ArQmA
+    RX_SFX = "rx/sfx"  # RandomX Safex
+    RX_XLA = "rx/xla"  # RandomX Scala
+    CN_0 = "cn/0"  # CryptoNight default (CNv0)
+    CN_1 = "cn/1"  # CryptoNight variant 1 (CNv1)
+    CN_FAST = "cn/fast"  # CryptoNight variant 2 (CNv2, aka CNFast)
+    CN_HEAVY = "cn/heavy"  # CryptoNight Heavy
+    CN_PICO = "cn/pico"  # CryptoNight Pico
+    CN_HALF = "cn/half"  # CryptoNight Half
+    CN_GPU = "cn/gpu"  # CryptoNight GPU
+    CN_R = "cn/r"  # CryptoNight R
+    CN_RWZ = "cn/rwz"  # CryptoNight ReverseWaltz
+    CN_ZLS = "cn/zls"  # CryptoNight ZLS
+    CN_DOUBLE = "cn/double"  # CryptoNight Double
+    CN_CCX = "cn/ccx"  # CryptoNight Conceal
+    CN_XAO = "cn/xao"  # CryptoNight Alloy
+    CN_TRTL = "cn/trtl"  # CryptoNight Turtle
+    CN_HAVEN = "cn/haven"  # CryptoNight Haven
+    CN_TUBE = "cn/tube"  # CryptoNight BitTube
+    CN_MSR = "cn/msr"  # CryptoNight Masari
+    CN_GR = "cn/gr"  # CryptoNight Graft
+    CN_RTO = "cn/rto"  # CryptoNight Rito
+
+class XMRigPool():
+    def __init__(self, coin:str, algo:str, url, user, password, tls, keep_alive, nice_hash):
+
 
 class XMRig:
     def __init__(self, config_path:str=None, xmrig_path:str="./xmrig", http_api_port:int=random.randint(1, 65535), http_api_token:str=None, donate_level:int=5, api_worker_id:str=None, http_api_host:str="0.0.0.0", opencl_enabled:bool=False, cuda_enabled:bool=False, pools:list=None):
