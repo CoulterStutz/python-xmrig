@@ -1,5 +1,6 @@
 import os
 import random, requests
+import subprocess
 from enum import Enum
 from datetime import timedelta
 
@@ -125,6 +126,9 @@ class XMRig:
             cmd += f" --coin {x.coin.value} -a {x.algo}"
 
         return cmd
+
+    def start_xmrig(self):
+        subprocess.Popen(self._generate_execution_command())
 
 class XMRigAPI:
     """
