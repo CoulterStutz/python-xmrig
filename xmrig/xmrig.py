@@ -12,7 +12,7 @@ class XMRigAPIPortError(Exception):
     def __init__(self, port):
         super().__init__(f"Unable to connect to XMRig API! {port} is not a valid port!")
 
-class XMRigAlgorithm(Enum):
+class Algorithm(Enum):
     RX_0 = "rx/0"  # RandomX default
     RX_WOW = "rx/wow"  # RandomX WowNero
     RX_LUA = "rx/lua"  # RandomX Lua
@@ -40,7 +40,15 @@ class XMRigAlgorithm(Enum):
     CN_RTO = "cn/rto"  # CryptoNight Rito
 
 class XMRigPool():
-    def __init__(self, coin:str, algo:str, url, user, password, tls, keep_alive, nice_hash):
+    def __init__(self, coin:str, algorithm:Algorithm, url:str, user:str, password:str="x", tls:bool=False, keep_alive:bool=True, nice_hash:bool=False):
+        self.coin = coin
+        self.algo = algorithm
+        self.url = url
+        self.user = user
+        self.password = password
+        self.tls = tls
+        self.keep_alive = keep_alive
+        self.nice_hash = nice_hash
 
 
 class XMRig:
