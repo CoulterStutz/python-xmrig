@@ -6,7 +6,7 @@ class XMRigAuthorizationError(Exception):
         self.message = message
         super().__init__(self.message)
 
-class XMRig:
+class XMRigAPI:
     """
     A class to interact with the XMRig miner API.
 
