@@ -6,12 +6,25 @@ class XMRigAuthorizationError(Exception):
         self.message = message
         super().__init__(self.message)
 
+class XMRigAPIPortError(Exception):
+    def __init__(self, port):
+        super().__init__(f"Unable to connect to XMRig API! {port} is not a valid port!")
+
 class XMRig:
     def __init__(self, xmrig_path, config_path, http_api_port:int=None, http_api_token:str=None):
         self._xmrig_path = xmrig_path
         self._config_path = config_path
         self._http_api_port = http_api_port
         self._http_api_token = http_api_token
+
+        if self._http_api_port is not None:
+            if self._http_api_port < 0 or self._http_api_port > 65535:
+                raise XMRigAPIPortError(port=self.http_api_port)
+
+            if self._http_api_token is not None:
+                self.API = XMRigAPI("127.0.0.1", self._http_api_port, self._http_api_token)
+            else:
+                self.API = XMRigAPI("127.0.0.1", self._http_api_port)
 
 class XMRigAPI:
     """
