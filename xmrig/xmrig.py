@@ -12,6 +12,25 @@ class XMRigAPIPortError(Exception):
     def __init__(self, port):
         super().__init__(f"Unable to connect to XMRig API! {port} is not a valid port!")
 
+class XMRigCoin(Enum):
+    MONERO = "monero"
+    WOWNERO = "wownero"
+    LOKI = "loki"
+    ARQMA = "arqma"
+    MASARI = "masari"
+    ITALO = "italo"
+    GRIN = "grin"
+    HAVEN = "haven"
+    TURTLECOIN = "turtlecoin"
+    BITTUBE = "bittube"
+    FREEHAVEN = "freehaven"
+    GRAFT = "graft"
+    ULTRONIUM = "ultronium"
+    KRB = "krb"  # Karbo
+    NERVA = "nerva"
+    Saronite = "saronite"
+    Torque = "torque"
+
 class Algorithm(Enum):
     RX_0 = "rx/0"  # RandomX default
     RX_WOW = "rx/wow"  # RandomX WowNero
