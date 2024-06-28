@@ -6,6 +6,13 @@ class XMRigAuthorizationError(Exception):
         self.message = message
         super().__init__(self.message)
 
+class XMRig:
+    def __init__(self, xmrig_path, config_path, http_api_port:int=None, http_api_token:str=None):
+        self._xmrig_path = xmrig_path
+        self._config_path = config_path
+        self._http_api_port = http_api_port
+        self._http_api_token = http_api_token
+
 class XMRigAPI:
     """
     A class to interact with the XMRig miner API.
