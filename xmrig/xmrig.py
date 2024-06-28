@@ -12,7 +12,7 @@ class XMRigAPIPortError(Exception):
     def __init__(self, port):
         super().__init__(f"Unable to connect to XMRig API! {port} is not a valid port!")
 
-class XMRigCoin(Enum):
+class PoolCoin(Enum):
     MONERO = "monero"
     WOWNERO = "wownero"
     LOKI = "loki"
@@ -31,7 +31,7 @@ class XMRigCoin(Enum):
     Saronite = "saronite"
     Torque = "torque"
 
-class Algorithm(Enum):
+class PoolAlgorithm(Enum):
     RX_0 = "rx/0"  # RandomX default
     RX_WOW = "rx/wow"  # RandomX WowNero
     RX_LUA = "rx/lua"  # RandomX Lua
@@ -59,7 +59,7 @@ class Algorithm(Enum):
     CN_RTO = "cn/rto"  # CryptoNight Rito
 
 class XMRigPool():
-    def __init__(self, coin:str, algorithm:Algorithm, url:str, user:str, password:str="x", tls:bool=False, keep_alive:bool=True, nice_hash:bool=False):
+    def __init__(self, coin:PoolCoin, algorithm:PoolAlgorithm, url:str, user:str, password:str="x", tls:bool=False, keep_alive:bool=True, nice_hash:bool=False):
         self.coin = coin
         self.algo = algorithm
         self.url = url
@@ -68,7 +68,6 @@ class XMRigPool():
         self.tls = tls
         self.keep_alive = keep_alive
         self.nice_hash = nice_hash
-
 
 class XMRig:
     def __init__(self, config_path:str=None, xmrig_path:str="./xmrig", http_api_port:int=random.randint(1, 65535), http_api_token:str=None, donate_level:int=5, api_worker_id:str=None, http_api_host:str="0.0.0.0", opencl_enabled:bool=False, cuda_enabled:bool=False, pools:list=None):
