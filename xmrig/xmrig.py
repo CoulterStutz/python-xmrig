@@ -63,10 +63,11 @@ class PoolAlgorithm(Enum):
     CN_RTO = "cn/rto"  # CryptoNight Rito
 
 class XMRigPool():
-    def __init__(self, coin:PoolCoin, algorithm:PoolAlgorithm, url:str, user:str, password:str="x", tls:bool=False, keep_alive:bool=True, nice_hash:bool=False):
+    def __init__(self, coin:PoolCoin, algorithm:PoolAlgorithm, url:str, user:str, port:int=3333, password:str="x", tls:bool=False, keep_alive:bool=True, nice_hash:bool=False):
         self.coin = coin
-        self.algo = algorithm
+        self.algo = algorithm.value
         self.url = url
+        self.port = port
         self.user = user
         self.password = password
         self.tls = tls
@@ -74,7 +75,7 @@ class XMRigPool():
         self.nice_hash = nice_hash
 
 class XMRig:
-    def __init__(self, config_path:str=None, xmrig_path:str="./xmrig", http_api_port:int=random.randint(1, 65535), http_api_token:str=None, donate_level:int=5, api_worker_id:str=None, http_api_host:str="0.0.0.0", opencl_enabled:bool=False, cuda_enabled:bool=False, pools:list=None):
+    def __init__(self, config_path:str=None, xmrig_path:str="xmrig", http_api_port:int=random.randint(1, 65535), http_api_token:str=None, donate_level:int=5, api_worker_id:str=None, http_api_host:str="0.0.0.0", opencl_enabled:bool=False, cuda_enabled:bool=False, pools:list=None):
         self._xmrig_path = xmrig_path
         self._config_path = config_path
         self._http_api_port = http_api_port
@@ -85,6 +86,8 @@ class XMRig:
         self._opencl_enabled = opencl_enabled
         self._cuda_enabled = cuda_enabled
         self._pools = pools
+
+        print(self._generate_execution_command())
 
         if self._http_api_port is not None:
             if self._http_api_port < 0 or self._http_api_port > 65535:
@@ -99,6 +102,29 @@ class XMRig:
             if type(x) is not XMRigPool:
                 raise TypeError(f"Pool {x} must be a XMRigPool instance!")
 
+    def _generate_execution_command(self):
+        cmd = f"{self._xmrig_path} --donate-level {self._donate_level} --api-worker-id {self._api_worker_id} --http-host {self._http_api_host} --http-port {self._http_api_port}"
+
+        if self._http_api_token is not None:
+            cmd += f" --http-access-token {self._http_api_token}"
+
+        if self._opencl_enabled:
+            cmd += " --opencl"
+
+        if self._cuda_enabled:
+            cmd += " --cuda"
+
+        for x in self._pools:
+            cmd += f" -o {x.url}:{x.port} -u {x.user} -p {x.password}"
+            if x.tls:
+                cmd += " --tls"
+            if x.keep_alive:
+                cmd += " -k"
+            if x.nice_hash:
+                cmd += " --nicehash"
+            cmd += f" --coin {x.coin.value} -a {x.algo}"
+
+        return cmd
 
 class XMRigAPI:
     """
