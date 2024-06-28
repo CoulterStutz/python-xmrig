@@ -1,3 +1,6 @@
+import os
+import random
+
 import requests
 from datetime import timedelta
 
@@ -11,11 +14,17 @@ class XMRigAPIPortError(Exception):
         super().__init__(f"Unable to connect to XMRig API! {port} is not a valid port!")
 
 class XMRig:
-    def __init__(self, xmrig_path, config_path, http_api_port:int=None, http_api_token:str=None):
+    def __init__(self, config_path:str=None, xmrig_path:str="./xmrig", http_api_port:int=random.randint(1, 65535), http_api_token:str=None, donate_level:int=5, api_worker_id:str=None, http_api_host:str="0.0.0.0", opencl_enabled:bool=False, cuda_enabled:bool=False, pools:list=None):
         self._xmrig_path = xmrig_path
         self._config_path = config_path
         self._http_api_port = http_api_port
         self._http_api_token = http_api_token
+        self._donate_level = donate_level
+        self._api_worker_id = api_worker_id
+        self._http_api_host = http_api_host
+        self._opencl_enabled = opencl_enabled
+        self._cuda_enabled = cuda_enabled
+        self._pools = pools
 
         if self._http_api_port is not None:
             if self._http_api_port < 0 or self._http_api_port > 65535:
