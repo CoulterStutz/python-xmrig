@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xmrig"
-version = "1.1.0"
+version = "1.1.1"
 description = "A python package for easy in line interfacing with XMRig Miner HTTP API"
 authors = ["CoulterStutz <coultercash@gmail.com>"]
 readme = "README.md"
