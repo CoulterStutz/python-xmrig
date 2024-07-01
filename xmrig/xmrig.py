@@ -2,7 +2,7 @@ import os, random, requests, subprocess
 import psutil
 from enum import Enum
 from datetime import timedelta
-from sys import platform
+import platform
 
 class XMRigAuthorizationError(Exception):
     def __init__(self, message="Access token is required but not provided. Please provide a valid access token."):
@@ -139,12 +139,10 @@ class XMRig:
     def start_xmrig(self):
         if not self._is_process_running():
             if self._config_path is not None:
-                subprocess.Popen([self._xmrig_path, "-c", self._config_path])
+                subprocess.Popen([self._xmrig_path, "-c", self._config_path], creationflags=subprocess.CREATE_NEW_CONSOLE)
             else:
                 cmd = self._generate_execution_command()
-                subprocess.Popen(cmd)
-        else:
-            print("XMRig is already running.")
+                subprocess.Popen(cmd, creationflags=subprocess.CREATE_NEW_CONSOLE)
 
     def stop_xmrig(self):
         if self._is_process_running():
@@ -154,12 +152,12 @@ class XMRig:
                     subprocess.run(["taskkill", "/f", "/im", "xmrig.exe"], check=True)
                 elif system_platform in ("Linux", "Darwin"):
                     subprocess.run(["pkill", "-f", "xmrig"], check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"Failed to stop xmrig: {e}")
-            else:
-                print("xmrig process terminated successfully.")
-        else:
-            print("XMRig is not running.")
+            except subprocess.CalledProcessError:
+                pass
+
+    def restart_xmrig(self):
+        self.stop_xmrig()
+        self.start_xmrig()
 
 
 class XMRigAPI:
