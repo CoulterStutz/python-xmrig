@@ -11,6 +11,9 @@ requests = "^2.32.3"
 psutil = "^6.0.0"
 
 
+[tool.poetry.group.dev.dependencies]
+twine = "^5.1.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
