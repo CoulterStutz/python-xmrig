@@ -96,8 +96,12 @@ class XMRig:
 
             if self._http_api_token is not None:
                 self.API = XMRigAPI("127.0.0.1", self._http_api_port, self._http_api_token)
+                self._api_enabled = True
             else:
                 self.API = XMRigAPI("127.0.0.1", self._http_api_port)
+                self._api_enabled = True
+        else:
+            self._api_enabled = False
 
         for x in pools:
             if type(x) is not XMRigPool:
@@ -146,8 +150,11 @@ class XMRig:
             print("xmrig process terminated successfully.")
 
     def restart_xmrig(self):
-        if self._http_api_token is not None:
+        if self._api_enabled:
             self.API.restart_miner()
+        else:
+            self.start_xmrig()
+            self.start_xmrig()
 
 
 class XMRigAPI:
