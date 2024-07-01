@@ -3,6 +3,8 @@ import random, requests
 import subprocess
 from enum import Enum
 from datetime import timedelta
+from sys import platform
+
 
 class XMRigAuthorizationError(Exception):
     def __init__(self, message="Access token is required but not provided. Please provide a valid access token."):
@@ -130,6 +132,18 @@ class XMRig:
             subprocess.Popen(self._generate_execution_command())
         else:
             subprocess.Popen(f"{self._xmrig_path} -c {self._config_path}")
+
+    def stop_xmrig(self):
+        system_platform = platform.system()
+        try:
+            if system_platform == "Windows":
+                subprocess.run(["taskkill", "/f", "/im", "xmrig.exe"], check=True)
+            elif system_platform == "Linux" or system_platform == "Darwin":
+                subprocess.run(["pkill", "-f", "xmrig"], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to stop xmrig: {e}")
+        else:
+            print("xmrig process terminated successfully.")
 
     def restart_xmrig(self):
         if self._http_api_token is not None:
