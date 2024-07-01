@@ -1,10 +1,8 @@
-import os
-import random, requests
-import subprocess
+import os, random, requests, subprocess
+import psutil
 from enum import Enum
 from datetime import timedelta
 from sys import platform
-
 
 class XMRigAuthorizationError(Exception):
     def __init__(self, message="Access token is required but not provided. Please provide a valid access token."):
