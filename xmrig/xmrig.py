@@ -78,7 +78,7 @@ class XMRigPool():
         self.nice_hash = nice_hash
 
 class XMRig:
-    def __init__(self, config_path:str=None, xmrig_path:str="xmrig", http_api_port:int=random.randint(1, 65535), http_api_token:str=None, donate_level:int=5, api_worker_id:str=None, http_api_host:str="0.0.0.0", opencl_enabled:bool=False, cuda_enabled:bool=False, pools:list=None):
+    def __init__(self, config_path: str = None, xmrig_path: str = "xmrig", http_api_port: int = random.randint(1, 65535), http_api_token: str = None, donate_level: int = 5, api_worker_id: str = None, http_api_host: str = "0.0.0.0", opencl_enabled: bool = False, cuda_enabled: bool = False, pools: List[XMRigPool] = None):
         self._xmrig_path = xmrig_path
         self._config_path = config_path
         self._http_api_port = http_api_port
@@ -88,11 +88,12 @@ class XMRig:
         self._http_api_host = http_api_host
         self._opencl_enabled = opencl_enabled
         self._cuda_enabled = cuda_enabled
-        self._pools = pools
+        self._pools = pools if pools else []
+        self._api_enabled = False
 
         if self._http_api_port is not None:
             if self._http_api_port < 0 or self._http_api_port > 65535:
-                raise XMRigAPIPortError(port=self.http_api_port)
+                raise XMRigAPIPortError(port=self._http_api_port)
 
             if self._http_api_token is not None:
                 self.API = XMRigAPI("127.0.0.1", self._http_api_port, self._http_api_token)
@@ -100,42 +101,42 @@ class XMRig:
             else:
                 self.API = XMRigAPI("127.0.0.1", self._http_api_port)
                 self._api_enabled = True
-        else:
-            self._api_enabled = False
 
-        for x in pools:
+        for x in self._pools:
             if type(x) is not XMRigPool:
                 raise TypeError(f"Pool {x} must be a XMRigPool instance!")
 
     def _generate_execution_command(self):
-        cmd = f"{self._xmrig_path} --donate-level {self._donate_level} --api-worker-id {self._api_worker_id} --http-host {self._http_api_host} --http-port {self._http_api_port}"
-
-        if self._http_api_token is not None:
-            cmd += f" --http-access-token {self._http_api_token}"
-
+        cmd = [self._xmrig_path, "--donate-level", str(self._donate_level)]
+        if self._api_worker_id:
+            cmd.extend(["--api-worker-id", self._api_worker_id])
+        cmd.extend(["--http-host", self._http_api_host, "--http-port", str(self._http_api_port)])
+        if self._http_api_token:
+            cmd.extend(["--http-access-token", self._http_api_token])
         if self._opencl_enabled:
-            cmd += " --opencl"
-
+            cmd.append("--opencl")
         if self._cuda_enabled:
-            cmd += " --cuda"
-
-        for x in self._pools:
-            cmd += f" -o {x.url}:{x.port} -u {x.user} -p {x.password}"
-            if x.tls:
-                cmd += " --tls"
-            if x.keep_alive:
-                cmd += " -k"
-            if x.nice_hash:
-                cmd += " --nicehash"
-            cmd += f" --coin {x.coin.value} -a {x.algo}"
-
+            cmd.append("--cuda")
+        for pool in self._pools:
+            cmd.extend(["-o", f"{pool.url}:{pool.port}", "-u", pool.user, "-p", pool.password])
+            if pool.tls:
+                cmd.append("--tls")
+            if pool.keep_alive:
+                cmd.append("-k")
+            if pool.nice_hash:
+                cmd.append("--nicehash")
+            if pool.coin:
+                cmd.extend(["--coin", pool.coin.value])
+            if pool.algo:
+                cmd.extend(["-a", pool.algo])
         return cmd
 
     def start_xmrig(self):
         if self._config_path is not None:
-            subprocess.Popen(self._generate_execution_command())
+            subprocess.Popen([self._xmrig_path, "-c", self._config_path])
         else:
-            subprocess.Popen(f"{self._xmrig_path} -c {self._config_path}")
+            cmd = self._generate_execution_command()
+            subprocess.Popen(cmd)
 
     def stop_xmrig(self):
         system_platform = platform.system()
@@ -150,11 +151,8 @@ class XMRig:
             print("xmrig process terminated successfully.")
 
     def restart_xmrig(self):
-        if self._api_enabled:
-            self.API.restart_miner()
-        else:
-            self.start_xmrig()
-            self.start_xmrig()
+        self.stop_xmrig()
+        self.start_xmrig()
 
 
 class XMRigAPI:
