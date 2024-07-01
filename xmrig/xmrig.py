@@ -68,7 +68,7 @@ class PoolAlgorithm(Enum):
 class XMRigPool():
     def __init__(self, coin:PoolCoin, algorithm:PoolAlgorithm, url:str, user:str, port:int=3333, password:str="x", tls:bool=False, keep_alive:bool=True, nice_hash:bool=False):
         self.coin = coin
-        self.algo = algorithm.value
+        self.algorithm = algorithm.value
         self.url = url
         self.port = port
         self.user = user
@@ -78,7 +78,7 @@ class XMRigPool():
         self.nice_hash = nice_hash
 
 class XMRig:
-    def __init__(self, config_path: str = None, xmrig_path: str = "xmrig", http_api_port: int = random.randint(1, 65535), http_api_token: str = None, donate_level: int = 5, api_worker_id: str = None, http_api_host: str = "0.0.0.0", opencl_enabled: bool = False, cuda_enabled: bool = False, pools: List[XMRigPool] = None):
+    def __init__(self, config_path: str = None, xmrig_path: str = "xmrig", http_api_port: int = random.randint(1, 65535), http_api_token: str = None, donate_level: int = 5, api_worker_id: str = None, http_api_host: str = "0.0.0.0", opencl_enabled: bool = False, cuda_enabled: bool = False, pools: list = None):
         self._xmrig_path = xmrig_path
         self._config_path = config_path
         self._http_api_port = http_api_port
@@ -103,7 +103,7 @@ class XMRig:
                 self._api_enabled = True
 
         for x in self._pools:
-            if type(x) is not XMRigPool:
+            if not isinstance(x, XMRigPool):
                 raise TypeError(f"Pool {x} must be a XMRigPool instance!")
 
     def _generate_execution_command(self):
@@ -127,32 +127,41 @@ class XMRig:
                 cmd.append("--nicehash")
             if pool.coin:
                 cmd.extend(["--coin", pool.coin.value])
-            if pool.algo:
-                cmd.extend(["-a", pool.algo])
+            if pool.algorithm:
+                cmd.extend(["-a", pool.algorithm])
         return cmd
 
+    def _is_process_running(self):
+        """Check if XMRig is already running"""
+        for proc in psutil.process_iter(['pid', 'name']):
+            if 'xmrig' in proc.info['name']:
+                return True
+        return False
+
     def start_xmrig(self):
-        if self._config_path is not None:
-            subprocess.Popen([self._xmrig_path, "-c", self._config_path])
+        if not self._is_process_running():
+            if self._config_path is not None:
+                subprocess.Popen([self._xmrig_path, "-c", self._config_path])
+            else:
+                cmd = self._generate_execution_command()
+                subprocess.Popen(cmd)
         else:
-            cmd = self._generate_execution_command()
-            subprocess.Popen(cmd)
+            print("XMRig is already running.")
 
     def stop_xmrig(self):
-        system_platform = platform.system()
-        try:
-            if system_platform == "Windows":
-                subprocess.run(["taskkill", "/f", "/im", "xmrig.exe"], check=True)
-            elif system_platform == "Linux" or system_platform == "Darwin":
-                subprocess.run(["pkill", "-f", "xmrig"], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to stop xmrig: {e}")
+        if self._is_process_running():
+            system_platform = platform.system()
+            try:
+                if system_platform == "Windows":
+                    subprocess.run(["taskkill", "/f", "/im", "xmrig.exe"], check=True)
+                elif system_platform in ("Linux", "Darwin"):
+                    subprocess.run(["pkill", "-f", "xmrig"], check=True)
+            except subprocess.CalledProcessError as e:
+                print(f"Failed to stop xmrig: {e}")
+            else:
+                print("xmrig process terminated successfully.")
         else:
-            print("xmrig process terminated successfully.")
-
-    def restart_xmrig(self):
-        self.stop_xmrig()
-        self.start_xmrig()
+            print("XMRig is not running.")
 
 
 class XMRigAPI:
@@ -460,6 +469,6 @@ class XMRigAPI:
             str: Current mining algorithm, or None if not available.
         """
         summary = self.fetch_summary()
-        if summary and "algo" in summary:
-            return summary["algo"]
+        if summary and "algorithm" in summary:
+            return summary["algorithm"]
         return None
