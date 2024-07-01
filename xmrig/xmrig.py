@@ -88,8 +88,6 @@ class XMRig:
         self._cuda_enabled = cuda_enabled
         self._pools = pools
 
-        print(self._generate_execution_command())
-
         if self._http_api_port is not None:
             if self._http_api_port < 0 or self._http_api_port > 65535:
                 raise XMRigAPIPortError(port=self.http_api_port)
@@ -132,6 +130,12 @@ class XMRig:
             subprocess.Popen(self._generate_execution_command())
         else:
             subprocess.Popen(f"{self._xmrig_path} -c {self._config_path}")
+
+    def restart_xmrig(self):
+        if self._http_api_token is not None:
+            self.API.restart_miner()
+
+
 class XMRigAPI:
     """
     A class to interact with the XMRig miner API.
