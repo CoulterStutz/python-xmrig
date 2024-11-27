@@ -7,32 +7,45 @@
 A wrapper for the XMRig HTTP API and client manager
 
 ## Installing xmrig-python
-### Building From Source
+
+### From Source
+
 ```shell
 git clone https://github.com/CoulterStutz/python-xmrig.git && cd python-xmrig
+poetry install # or use `pip install .`, dont forget the period to set the source location to the current directory
 ```
-After installing from source, use poetry to install the package
-```shell
-poetry install
-```
-After that the package will be avalible to use!
 
-### Using Pip or Poetry
-#### Using Pip
+After that the package will be available to use!
+
+### Using PyPi
+
 ```shell
-pip install xmrig
-```
-#### Poetry
-```shell
-poetry install xmrig
+poetry install xmrig # or use `pip install xmrig`.
 ```
 
 ## Example Usage
-Here is a basic implementation of the API Wrapper now dubbed XMRigAPI in 1.1
+
+Here is a basic implementation of the API Wrapper now dubbed XMRigAPI.
+
 ```python
+# Import the module and initialize the API wrapper.
 import xmrig
 x = xmrig.XMRigAPI(ip="127.0.0.1", port="5545", access_token="example")
-print(x.hashrate)  # Prints out the current hashrate
+
+# Control the miner using JSON RPC
+x.pause_miner()
+x.resume_miner()
+x.stop_miner()
+x.start_miner()
+
+# Edit and update the miners `config.json` via the HTTP API
+config = x.get_config()
+config["pools"]["USER"] = "NEW_WALLET_ADDRESS"
+x.post_config(config)
+
+# Summary and Backends API data is available as properties in either full or individual format.
+print(x.summary)
+print(x.hashrates)  # Prints out the current hashrates
 print(x.accepted_jobs)  # Prints out the accepted_jobs counter
 print(x.rejected_jobs)  # Prints out the rejected_jobs counter
 print(x.current_difficulty)  # Prints out the current difficulty
