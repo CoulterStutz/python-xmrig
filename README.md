@@ -12,7 +12,7 @@ A wrapper for the XMRig HTTP API and client manager
 
 ```shell
 git clone https://github.com/CoulterStutz/python-xmrig.git && cd python-xmrig
-poetry install # or use `pip install .`, dont forget the period to set the source location to the current directory
+poetry install # or use `pip install .`, dont forget the period to set the source location to the current directory.
 ```
 
 After that the package will be available to use!
@@ -32,13 +32,13 @@ Here is a basic implementation of the API Wrapper now dubbed XMRigAPI.
 import xmrig
 x = xmrig.XMRigAPI(ip="127.0.0.1", port="5545", access_token="example")
 
-# Control the miner using JSON RPC
+# Control the miner using JSON RPC.
 x.pause_miner()
 x.resume_miner()
 x.stop_miner()
 x.start_miner()
 
-# Edit and update the miners `config.json` via the HTTP API
+# Edit and update the miners `config.json` via the HTTP API.
 config = x.get_config()
 config["pools"]["USER"] = "NEW_WALLET_ADDRESS"
 x.post_config(config)
