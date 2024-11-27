@@ -34,7 +34,7 @@ class XMRigAPI:
 
     Attributes:
         _ip (str): IP address of the XMRig API.
-        _port (int): Port of the XMRig API.
+        _port (str): Port of the XMRig API.
         _access_token (str): Access token for authorization.
         _base_url (str): Base URL for the XMRig API.
         _json_rpc_url (str): URL for the json RPC.
