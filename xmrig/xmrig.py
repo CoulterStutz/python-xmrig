@@ -106,23 +106,6 @@ class XMRigAPI:
             print(f"An error occurred setting the Authorization Header: {e}")
             return False
 
-    def _save_config(self, config: dict) -> bool:
-        """
-        Save updated config, to be used in conjunction with `post_config` to update the config.
-
-        Args:
-            config (dict): Updated configuration to be used.
-
-        Returns:
-            bool: True if the config is saved, or False if an error occurred
-        """
-        try:
-            self._new_config = config
-            return True
-        except Exception as e:
-            print(f"An error occurred saving the config: {e}")
-            return False
-
     def get_summary(self) -> requests.Response | bool:
         """
         Fetches the summary data from the XMRig API.
@@ -181,7 +164,7 @@ class XMRigAPI:
             print(f"An error occurred while connecting to {self._config_url}: {e}")
             return False
 
-    def post_config(self) -> bool:
+    def post_config(self, config: dict) -> bool:
         """
         Updates the config data via the XMRig API.
 
@@ -190,7 +173,7 @@ class XMRigAPI:
         """
         try:
             self._post_config_response = requests.post(
-                self._config_url, json=self._new_config, headers=self._headers)
+                self._config_url, json=config, headers=self._headers)
             if self._post_config_response.status_code == 401:
                 raise XMRigAuthorizationError()
             # Raise an HTTPError for bad responses (4xx and 5xx)
