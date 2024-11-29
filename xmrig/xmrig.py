@@ -5,9 +5,10 @@ Provides classes and methods to interact with the XMRig miner API for tasks such
 as fetching status, managing configurations, and controlling the mining process.
 """
 
-import requests
+import requests, logging
 from datetime import timedelta
 
+log = logging.getLogger("XMRigAPI")
 
 class XMRigAuthorizationError(Exception):
     """
@@ -91,6 +92,7 @@ class XMRigAPI:
             "id": 1,
         }
         self.get_all_responses()
+        log.info("XMRigAPI initialized.")
 
     def _set_auth_header(self) -> bool:
         """
@@ -101,9 +103,10 @@ class XMRigAPI:
         """
         try:
             self._headers['Authorization'] = f"Bearer {self._access_token}"
+            log.info(f"Authorization header successfully changed.")
             return True
         except Exception as e:
-            print(f"An error occurred setting the Authorization Header: {e}")
+            log.error(f"An error occurred setting the Authorization Header: {e}")
             return False
 
     def get_summary(self) -> requests.Response.json | bool:
@@ -120,9 +123,11 @@ class XMRigAPI:
                 raise XMRigAuthorizationError()
             # Raise an HTTPError for bad responses (4xx and 5xx)
             summary_response.raise_for_status()
+            self._summary_response = summary_response.json()
+            log.info(f"Summary endpoint successfully fetched.")
             return summary_response.json()
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred while connecting to {self._summary_url}: {e}")
+            log.error(f"An error occurred while connecting to {self._summary_url}: {e}")
             return False
 
     def get_backends(self) -> requests.Response.json | bool:
@@ -139,9 +144,11 @@ class XMRigAPI:
                 raise XMRigAuthorizationError()
             # Raise an HTTPError for bad responses (4xx and 5xx)
             backends_response.raise_for_status()
+            self._backends_response = backends_response.json()
+            log.info(f"Backends endpoint successfully fetched.")
             return backends_response.json()
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred while connecting to {self._backends_url}: {e}")
+            log.error(f"An error occurred while connecting to {self._backends_url}: {e}")
             return False
 
     def get_config(self) -> requests.Response.json | bool:
@@ -159,9 +166,10 @@ class XMRigAPI:
             # Raise an HTTPError for bad responses (4xx and 5xx)
             config_response.raise_for_status()
             self._config_response = config_response.json()
-            return self._config_response
+            log.info(f"Config endpoint successfully fetched.")
+            return config_response.json()
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred while connecting to {self._config_url}: {e}")
+            log.error(f"An error occurred while connecting to {self._config_url}: {e}")
             return False
 
     def post_config(self, config: dict) -> bool:
@@ -178,9 +186,10 @@ class XMRigAPI:
                 raise XMRigAuthorizationError()
             # Raise an HTTPError for bad responses (4xx and 5xx)
             self._post_config_response.raise_for_status()
+            log.info(f"Config endpoint successfully updated.")
             return True
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred while connecting to {self._config_url}: {e}")
+            log.error(f"An error occurred while connecting to {self._config_url}: {e}")
             return False
 
     def get_all_responses(self) -> bool:
@@ -195,9 +204,10 @@ class XMRigAPI:
             self._backends_response = self.get_backends()
             if self._access_token != None:
                 self._config_response = self.get_config()
+            log.info(f"All endpoints successfully fetched.")
             return True
         except Exception as e:
-            print(f"An error occurred fetching all the API endpoints: {e}")
+            log.error(f"An error occurred fetching all the API endpoints: {e}")
             return False
 
     def pause_miner(self) -> bool:
@@ -213,8 +223,10 @@ class XMRigAPI:
             payload["method"] = "pause"
             response = requests.post(url, json=payload, headers=self._headers)
             response.raise_for_status()
+            log.info(f"Miner successfully paused.")
             return True
         except requests.exceptions.RequestException as e:
+            log.error(f"An error occurred pausing the miner: {e}")
             return False
 
     def resume_miner(self) -> bool:
@@ -230,8 +242,10 @@ class XMRigAPI:
             payload["method"] = "resume"
             response = requests.post(url, json=payload, headers=self._headers)
             response.raise_for_status()
+            log.info(f"Miner successfully resumed.")
             return True
         except requests.exceptions.RequestException as e:
+            log.error(f"An error occurred restarting the miner: {e}")
             return False
 
     def stop_miner(self) -> bool:
@@ -247,8 +261,10 @@ class XMRigAPI:
             payload["method"] = "stop"
             response = requests.post(url, json=payload, headers=self._headers)
             response.raise_for_status()
+            log.info(f"Miner successfully stopped.")
             return True
         except requests.exceptions.RequestException as e:
+            log.error(f"An error occurred stopping the miner: {e}")
             return False
 
     # TODO: The `start` json RPC method is not implemented by XMRig yet, use alternative function below until PR 3030 is 
@@ -265,9 +281,14 @@ class XMRigAPI:
         try:
             self.get_config()
             self.post_config()
+            log.info(f"Miner successfully started.")
             return True
         except requests.exceptions.RequestException as e:
+            log.error(f"An error occurred starting the miner: {e}")
             return False
+    
+    # TODO: Add logging to example in README
+    # TODO: Add try/except blocks with log.debug inside try block for returned cached data
 
     @property
     def summary(self) -> dict |bool:
@@ -279,6 +300,7 @@ class XMRigAPI:
         """
         if self._summary_response:
             return self._summary_response
+        log.error(f"An error occurred fetching the cached summary data.")
         return False
 
     @property
@@ -291,6 +313,7 @@ class XMRigAPI:
         """
         if self._backends_response:
             return self._backends_response
+        log.error(f"An error occurred fetching the cached backends data.")
         return False
 
     @property
@@ -303,6 +326,7 @@ class XMRigAPI:
         """
         if self._config_response:
             return self._config_response
+        log.error(f"An error occurred fetching the cached config data.")
         return False
 
     @property
@@ -315,6 +339,7 @@ class XMRigAPI:
         """
         if self._summary_response and "id" in self._summary_response:
             return self._summary_response["id"]
+        log.error(f"An error occurred fetching the cached ID information data.")
         return False
 
     @property
@@ -327,6 +352,7 @@ class XMRigAPI:
         """
         if self._summary_response and "worker_id" in self._summary_response:
             return self._summary_response["worker_id"]
+        log.error(f"An error occurred fetching the cached worker ID information data.")
         return False
 
     @property
@@ -339,6 +365,7 @@ class XMRigAPI:
         """
         if self._summary_response and "uptime" in self._summary_response:
             return self._summary_response["uptime"]
+        log.error(f"An error occurred fetching the cached current uptime data.")
         return False
 
     @property
@@ -351,6 +378,7 @@ class XMRigAPI:
         """
         if self._summary_response and "uptime" in self._summary_response:
             return str(timedelta(seconds=self._summary_response["uptime"]))
+        log.error(f"An error occurred fetching the cached current uptime in a human-readable format data.")
         return False
 
     @property
@@ -363,6 +391,7 @@ class XMRigAPI:
         """
         if self._summary_response and "restricted" in self._summary_response:
             return self._summary_response["restricted"]
+        log.error(f"An error occurred fetching the cached restricted status data.")
         return None
 
     @property
@@ -375,6 +404,7 @@ class XMRigAPI:
         """
         if self._summary_response and "resources" in self._summary_response:
             return self._summary_response["resources"]
+        log.error(f"An error occurred fetching the cached resources data.")
         return False
 
     @property
@@ -387,6 +417,7 @@ class XMRigAPI:
         """
         if self._summary_response and "memory" in self._summary_response["resources"]:
             return self._summary_response["resources"]["memory"]
+        log.error(f"An error occurred fetching the cached memory usage data.")
         return False
 
     @property
@@ -399,6 +430,7 @@ class XMRigAPI:
         """
         if self._summary_response and "free" in self._summary_response["resources"]["memory"]:
             return self._summary_response["resources"]["memory"]["free"]
+        log.error(f"An error occurred fetching the cached free memory data.")
         return False
 
     @property
@@ -411,6 +443,7 @@ class XMRigAPI:
         """
         if self._summary_response and "total" in self._summary_response["resources"]["memory"]:
             return self._summary_response["resources"]["memory"]["total"]
+        log.error(f"An error occurred fetching the cached total memory data.")
         return False
 
     @property
@@ -423,6 +456,7 @@ class XMRigAPI:
         """
         if self._summary_response and "resident_set" in self._summary_response["resources"]["memory"]:
             return self._summary_response["resources"]["memory"]["resident_set_memory"]
+        log.error(f"An error occurred fetching the cached resident set memory data.")
         return False
 
     @property
@@ -435,6 +469,7 @@ class XMRigAPI:
         """
         if self._summary_response and "load_average" in self._summary_response["resources"]:
             return self._summary_response["resources"]["load_average"]
+        log.error(f"An error occurred fetching the cached load average data.")
         return False
 
     @property
@@ -447,6 +482,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hardware_concurrency" in self._summary_response["resources"]:
             return self._summary_response["resources"]["hardware_concurrency"]
+        log.error(f"An error occurred fetching the cached hardware concurrency data.")
         return False
 
     @property
@@ -459,6 +495,7 @@ class XMRigAPI:
         """
         if self._summary_response and "features" in self._summary_response["resources"]:
             return self._summary_response["resources"]["features"]
+        log.error(f"An error occurred fetching the cached features data.")
         return False
 
     @property
@@ -471,6 +508,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]
+        log.error(f"An error occurred fetching the cached results data.")
         return False
 
     @property
@@ -483,6 +521,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]["diff_current"]
+        log.error(f"An error occurred fetching the cached current difficulty data.")
         return False
 
     @property
@@ -495,6 +534,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]["shares_good"]
+        log.error(f"An error occurred fetching the cached good shares data.")
         return False
 
     @property
@@ -507,6 +547,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]["shares_total"]
+        log.error(f"An error occurred fetching the cached total shares data.")
         return False
 
     @property
@@ -519,6 +560,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]["avg_time"]
+        log.error(f"An error occurred fetching the cached average time data.")
         return False
 
     @property
@@ -531,6 +573,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]["avg_time_ms"]
+        log.error(f"An error occurred fetching the cached average time in `ms` data.")
         return False
 
     @property
@@ -543,6 +586,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]["hashes_total"]
+        log.error(f"An error occurred fetching the cached total hashes data.")
         return False
 
     @property
@@ -555,6 +599,7 @@ class XMRigAPI:
         """
         if self._summary_response and "results" in self._summary_response:
             return self._summary_response["results"]["best"]
+        log.error(f"An error occurred fetching the cached best results data.")
         return False
 
     @property
@@ -567,6 +612,7 @@ class XMRigAPI:
         """
         if self._summary_response and "algo" in self._summary_response:
             return self._summary_response["algo"]
+        log.error(f"An error occurred fetching the cached current mining alogorithm data.")
         return False
 
     @property
@@ -579,6 +625,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]
+        log.error(f"An error occurred fetching the cached connection data.")
         return False
 
     @property
@@ -591,6 +638,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["pool"]
+        log.error(f"An error occurred fetching the cached pool information data.")
         return False
 
     @property
@@ -603,6 +651,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["ip"]
+        log.error(f"An error occurred fetching the cached IP address data.")
         return False
 
     @property
@@ -615,6 +664,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["uptime"]
+        log.error(f"An error occurred fetching the cached pool uptime data.")
         return False
 
     @property
@@ -627,6 +677,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["uptime_ms"]
+        log.error(f"An error occurred fetching the cached pool uptime in `ms` data.")
         return False
 
     @property
@@ -639,6 +690,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["ping"]
+        log.error(f"An error occurred fetching the cached pool ping data.")
         return False
 
     @property
@@ -651,6 +703,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["failures"]
+        log.error(f"An error occurred fetching the cached pool failures data.")
         return False
 
     @property
@@ -663,6 +716,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["tls"]
+        log.error(f"An error occurred fetching the cached pool tls data.")
         return None
 
     @property
@@ -675,6 +729,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["tls-fingerprint"]
+        log.error(f"An error occurred fetching the cached pool tls fingerprint data.")
         return False
 
     @property
@@ -687,6 +742,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["algo"]
+        log.error(f"An error occurred fetching the cached pool algorithm data.")
         return False
 
     @property
@@ -699,6 +755,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["diff"]
+        log.error(f"An error occurred fetching the cached pool difficulty data.")
         return False
 
     @property
@@ -711,6 +768,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["accepted"]
+        log.error(f"An error occurred fetching the cached pool accepted jobs data.")
         return False
 
     @property
@@ -723,6 +781,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["rejected"]
+        log.error(f"An error occurred fetching the cached pool rejected jobs data.")
         return False
 
     @property
@@ -735,6 +794,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["avg_time"]
+        log.error(f"An error occurred fetching the cached pool average time data.")
         return False
 
     @property
@@ -747,6 +807,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["avg_time_ms"]
+        log.error(f"An error occurred fetching the cached pool average time in `ms` data.")
         return False
 
     @property
@@ -759,6 +820,7 @@ class XMRigAPI:
         """
         if self._summary_response and "connection" in self._summary_response:
             return self._summary_response["connection"]["hashes_total"]
+        log.error(f"An error occurred fetching the cached pool total hashes data.")
         return False
 
     @property
@@ -771,6 +833,7 @@ class XMRigAPI:
         """
         if self._summary_response and "version" in self._summary_response:
             return self._summary_response["version"]
+        log.error(f"An error occurred fetching the cached version data.")
         return False
 
     @property
@@ -783,6 +846,7 @@ class XMRigAPI:
         """
         if self._summary_response and "kind" in self._summary_response:
             return self._summary_response["kind"]
+        log.error(f"An error occurred fetching the cached kind data.")
         return False
 
     @property
@@ -795,6 +859,7 @@ class XMRigAPI:
         """
         if self._summary_response and "ua" in self._summary_response:
             return self._summary_response["ua"]
+        log.error(f"An error occurred fetching the cached user agent data.")
         return False
 
     @property
@@ -807,6 +872,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]
+        log.error(f"An error occurred fetching the cached CPU data.")
         return False
 
     @property
@@ -819,6 +885,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["brand"]
+        log.error(f"An error occurred fetching the cached CPU brand data.")
         return False
 
     @property
@@ -831,6 +898,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["family"]
+        log.error(f"An error occurred fetching the cached CPU family data.")
         return False
 
     @property
@@ -843,6 +911,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["model"]
+        log.error(f"An error occurred fetching the cached CPU model data.")
         return False
 
     @property
@@ -855,6 +924,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["stepping"]
+        log.error(f"An error occurred fetching the cached CPU stepping data.")
         return False
 
     @property
@@ -867,6 +937,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["proc_info"]
+        log.error(f"An error occurred fetching the cached CPU frequency data.")
         return False
 
     @property
@@ -879,6 +950,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["aes"]
+        log.error(f"An error occurred fetching the cached CPU aes data.")
         return False
 
     @property
@@ -891,6 +963,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["avx2"]
+        log.error(f"An error occurred fetching the cached CPU avx2 data.")
         return False
 
     @property
@@ -903,6 +976,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["x64"]
+        log.error(f"An error occurred fetching the cached CPU x64 data.")
         return False
 
     @property
@@ -915,6 +989,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["64_bit"]
+        log.error(f"An error occurred fetching the cached CPU x64-bit data.")
         return False
 
     @property
@@ -927,6 +1002,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["l2"]
+        log.error(f"An error occurred fetching the cached CPU l2 cache data.")
         return False
 
     @property
@@ -939,6 +1015,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["l3"]
+        log.error(f"An error occurred fetching the cached CPU l3 cache data.")
         return False
 
     @property
@@ -951,6 +1028,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["cores"]
+        log.error(f"An error occurred fetching the cached CPU cores data.")
         return False
 
     @property
@@ -963,6 +1041,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["threads"]
+        log.error(f"An error occurred fetching the cached CPU threads data.")
         return False
 
     @property
@@ -975,6 +1054,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["packages"]
+        log.error(f"An error occurred fetching the cached CPU packages data.")
         return False
 
     @property
@@ -987,6 +1067,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["nodes"]
+        log.error(f"An error occurred fetching the cached CPU nodes data.")
         return False
 
     @property
@@ -999,6 +1080,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["backend"]
+        log.error(f"An error occurred fetching the cached CPU backend data.")
         return False
 
     @property
@@ -1011,6 +1093,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["msr"]
+        log.error(f"An error occurred fetching the cached CPU msr data.")
         return False
 
     @property
@@ -1023,6 +1106,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["assembly"]
+        log.error(f"An error occurred fetching the cached CPU assembly data.")
         return False
 
     @property
@@ -1035,6 +1119,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["arch"]
+        log.error(f"An error occurred fetching the cached CPU architecture data.")
         return False
 
     @property
@@ -1047,6 +1132,7 @@ class XMRigAPI:
         """
         if self._summary_response and "cpu" in self._summary_response:
             return self._summary_response["cpu"]["flags"]
+        log.error(f"An error occurred fetching the cached CPU flags data.")
         return False
 
     @property
@@ -1059,6 +1145,7 @@ class XMRigAPI:
         """
         if self._summary_response and "donate_level" in self._summary_response:
             return self._summary_response["donate_level"]
+        log.error(f"An error occurred fetching the cached donation level data.")
         return False
 
     @property
@@ -1071,6 +1158,7 @@ class XMRigAPI:
         """
         if self._summary_response and "paused" in self._summary_response:
             return self._summary_response["paused"]
+        log.error(f"An error occurred fetching the cached paused status data.")
         return False
 
     @property
@@ -1083,6 +1171,7 @@ class XMRigAPI:
         """
         if self._summary_response and "algorithms" in self._summary_response:
             return self._summary_response["algorithms"]
+        log.error(f"An error occurred fetching the cached algorithms data.")
         return False
 
     @property
@@ -1095,6 +1184,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._summary_response["hashrate"]
+        log.error(f"An error occurred fetching the cached current hashrates data.")
         return False
 
     @property
@@ -1107,6 +1197,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._summary_response["hashrate"]["total"][0]
+        log.error(f"An error occurred fetching the cached current hashrate (10s) data.")
         return False
 
     @property
@@ -1119,6 +1210,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._summary_response["hashrate"]["total"][1]
+        log.error(f"An error occurred fetching the cached current hashrate (1m) data.")
         return False
 
     @property
@@ -1131,6 +1223,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._summary_response["hashrate"]["total"][2]
+        log.error(f"An error occurred fetching the cached current hashrate (15m) data.")
         return False
 
     @property
@@ -1143,6 +1236,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._summary_response["hashrate"]["highest"]
+        log.error(f"An error occurred fetching the cached highest hashrate data.")
         return False
 
     @property
@@ -1155,6 +1249,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hugepages" in self._summary_response:
             return self._summary_response["hugepages"]
+        log.error(f"An error occurred fetching the cached hugepages data.")
         return False
 
     # * Data Provided by the backends endpoint
@@ -1172,6 +1267,7 @@ class XMRigAPI:
                 if "type" in i and i["enabled"] == True:
                     types.append(i["type"])
             return types
+        log.error(f"An error occurred fetching the cached enabled backends data.")
         return False
 
     @property
@@ -1184,6 +1280,7 @@ class XMRigAPI:
         """
         if self._backends_response and "enabled" in self._backends_response[0]:
             return self._backends_response[0]["enabled"]
+        log.error(f"An error occurred fetching the cached CPU enabled status data.")
         return None
 
     @property
@@ -1196,6 +1293,7 @@ class XMRigAPI:
         """
         if self._backends_response and "algo" in self._backends_response[0]:
             return self._backends_response[0]["algo"]
+        log.error(f"An error occurred fetching the cached CPU algorithm data.")
         return False
 
     @property
@@ -1208,6 +1306,7 @@ class XMRigAPI:
         """
         if self._backends_response and "profile" in self._backends_response[0]:
             return self._backends_response[0]["profile"]
+        log.error(f"An error occurred fetching the cached CPU profile data.")
         return False
 
     @property
@@ -1220,12 +1319,13 @@ class XMRigAPI:
         """
         if self._backends_response and "hw-aes" in self._backends_response[0]:
             return self._backends_response[0]["hw-aes"]
+        log.error(f"An error occurred fetching the cached CPU hw-aes support data.")
         return None
 
     @property
     def be_cpu_priority(self) -> int | bool:
         """
-        Retrieves the cached CPU  priority from the backends data. 
+        Retrieves the cached CPU priority from the backends data. 
 
         Value from 1 (lowest priority) to 5 (highest possible priority). Default 
         value `-1` means XMRig doesn't change threads priority at all,
@@ -1235,6 +1335,7 @@ class XMRigAPI:
         """
         if self._backends_response and "priority" in self._backends_response[0]:
             return self._backends_response[0]["priority"]
+        log.error(f"An error occurred fetching the cached CPU priority data.")
         return False
 
     @property
@@ -1247,6 +1348,7 @@ class XMRigAPI:
         """
         if self._backends_response and "msr" in self._backends_response[0]:
             return self._backends_response[0]["msr"]
+        log.error(f"An error occurred fetching the cached CPU msr data.")
         return None
 
     @property
@@ -1259,6 +1361,7 @@ class XMRigAPI:
         """
         if self._backends_response and "asm" in self._backends_response[0]:
             return self._backends_response[0]["asm"]
+        log.error(f"An error occurred fetching the cached CPU asm data.")
         return False
 
     @property
@@ -1271,6 +1374,7 @@ class XMRigAPI:
         """
         if self._backends_response and "argon2-impl" in self._backends_response[0]:
             return self._backends_response[0]["argon2-impl"]
+        log.error(f"An error occurred fetching the cached CPU argon2 implementation data.")
         return False
 
     @property
@@ -1283,6 +1387,7 @@ class XMRigAPI:
         """
         if self._backends_response and "hugepages" in self._backends_response[0]:
             return self._backends_response[0]["hugepages"]
+        log.error(f"An error occurred fetching the cached CPU hugepages data.")
         return False
 
     @property
@@ -1295,6 +1400,7 @@ class XMRigAPI:
         """
         if self._backends_response and "memory" in self._backends_response[0]:
             return self._backends_response[0]["memory"]
+        log.error(f"An error occurred fetching the cached CPU memory data.")
         return False
 
     @property
@@ -1307,6 +1413,7 @@ class XMRigAPI:
         """
         if self._backends_response and "enabled" in self._backends_response[1]:
             return self._backends_response[1]["enabled"]
+        log.error(f"An error occurred fetching the cached OpenCL enabled data.")
         return None
 
     @property
@@ -1319,6 +1426,7 @@ class XMRigAPI:
         """
         if self._backends_response and "algo" in self._backends_response[1]:
             return self._backends_response[1]["algo"]
+        log.error(f"An error occurred fetching the cached OpenCL algorithm data.")
         return False
 
     @property
@@ -1331,6 +1439,7 @@ class XMRigAPI:
         """
         if self._backends_response and "profile" in self._backends_response[1]:
             return self._backends_response[1]["profile"]
+        log.error(f"An error occurred fetching the cached OpenCL profile data.")
         return False
 
     @property
@@ -1343,6 +1452,7 @@ class XMRigAPI:
         """
         if self._backends_response and "platform" in self._backends_response[1]:
             return self._backends_response[1]["platform"]
+        log.error(f"An error occurred fetching the cached OpenCL platform data.")
         return False
 
     @property
@@ -1355,6 +1465,7 @@ class XMRigAPI:
         """
         if self._backends_response and "type" in self._backends_response[2]:
             return self._backends_response[2]["type"]
+        log.error(f"An error occurred fetching the cached Cuda type data.")
         return False
 
     @property
@@ -1367,6 +1478,7 @@ class XMRigAPI:
         """
         if self._backends_response and "enabled" in self._backends_response[2]:
             return self._backends_response[2]["enabled"]
+        log.error(f"An error occurred fetching the cached Cuda enabled status data.")
         return None
 
     @property
@@ -1379,6 +1491,7 @@ class XMRigAPI:
         """
         if self._backends_response and "algo" in self._backends_response[2]:
             return self._backends_response[2]["algo"]
+        log.error(f"An error occurred fetching the cached Cuda algorithm data.")
         return False
 
     @property
@@ -1391,6 +1504,7 @@ class XMRigAPI:
         """
         if self._backends_response and "profile" in self._backends_response[2]:
             return self._backends_response[2]["profile"]
+        log.error(f"An error occurred fetching the cached Cuda profile data.")
         return False
 
     @property
@@ -1403,6 +1517,7 @@ class XMRigAPI:
         """
         if self._backends_response and "versions" in self._backends_response[2]:
             return self._backends_response[2]["versions"]
+        log.error(f"An error occurred fetching the cached Cuda versions data.")
         return False
 
     @property
@@ -1415,6 +1530,7 @@ class XMRigAPI:
         """
         if self._backends_response and "cuda-runtime" in self._backends_response[2]:
             return self._backends_response[2]["versions"]["cuda-runtime"]
+        log.error(f"An error occurred fetching the cached Cuda runtime data.")
         return False
 
     @property
@@ -1427,6 +1543,7 @@ class XMRigAPI:
         """
         if self._backends_response and "cuda-driver" in self._backends_response[2]:
             return self._backends_response[2]["versions"]["cuda-driver"]
+        log.error(f"An error occurred fetching the cached Cuda driver data.")
         return False
 
     @property
@@ -1439,6 +1556,7 @@ class XMRigAPI:
         """
         if self._backends_response and "plugin" in self._backends_response[2]:
             return self._backends_response[2]["versions"]["plugin"]
+        log.error(f"An error occurred fetching the cached Cuda plugin data.")
         return False
 
     @property
@@ -1451,6 +1569,7 @@ class XMRigAPI:
         """
         if self._backends_response and "hashrate" in self._backends_response[2]:
             return self._backends_response[2]["hashrate"]
+        log.error(f"An error occurred fetching the cached Cuda current hashrate data.")
         return False
 
     @property
@@ -1463,6 +1582,7 @@ class XMRigAPI:
         """
         if self._backends_response and "hashrate" in self._backends_response[2]:
             return self._backends_response[2]["hashrate"][0]
+        log.error(f"An error occurred fetching the cached Cuda current hashrate (10s) data.")
         return False
 
     @property
@@ -1475,6 +1595,7 @@ class XMRigAPI:
         """
         if self._backends_response and "hashrate" in self._backends_response[2]:
             return self._backends_response[2]["hashrate"][1]
+        log.error(f"An error occurred fetching the cached Cuda current hashrate (1m) data.")
         return False
 
     @property
@@ -1487,6 +1608,7 @@ class XMRigAPI:
         """
         if self._backends_response and "hashrate" in self._backends_response[2]:
             return self._backends_response[2]["hashrate"][2]
+        log.error(f"An error occurred fetching the cached Cuda current hashrate (15m) data.")
         return False
 
     @property
@@ -1499,6 +1621,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]
+        log.error(f"An error occurred fetching the cached Cuda threads data.")
         return False
 
     @property
@@ -1511,6 +1634,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["index"]
+        log.error(f"An error occurred fetching the cached Cuda threads index data.")
         return False
 
     @property
@@ -1523,6 +1647,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["threads"]
+        log.error(f"An error occurred fetching the cached Cuda threads amount data.")
         return False
 
     @property
@@ -1535,6 +1660,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["blocks"]
+        log.error(f"An error occurred fetching the cached Cuda threads blocks data.")
         return False
 
     @property
@@ -1547,6 +1673,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["bfactor"]
+        log.error(f"An error occurred fetching the cached Cuda threads bfactor data.")
         return False
 
     @property
@@ -1559,6 +1686,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["bsleep"]
+        log.error(f"An error occurred fetching the cached Cuda threads bsleep data.")
         return False
 
     @property
@@ -1571,6 +1699,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["affinity"]
+        log.error(f"An error occurred fetching the cached Cuda threads affinity data.")
         return False
 
     @property
@@ -1583,6 +1712,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["dataset_host"]
+        log.error(f"An error occurred fetching the cached Cuda threads dataset host data.")
         return None
 
     @property
@@ -1595,6 +1725,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._backends_response[2]["threads"][0]["hashrate"]
+        log.error(f"An error occurred fetching the cached Cuda threads hashrates data.")
         return False
 
     @property
@@ -1607,6 +1738,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._backends_response[2]["threads"][0]["hashrate"][0]
+        log.error(f"An error occurred fetching the cached Cuda threads hashrate (10s) data.")
         return False
 
     @property
@@ -1619,6 +1751,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._backends_response[2]["threads"][0]["hashrate"][1]
+        log.error(f"An error occurred fetching the cached Cuda threads hashrates (1m) data.")
         return False
 
     @property
@@ -1631,6 +1764,7 @@ class XMRigAPI:
         """
         if self._summary_response and "hashrate" in self._summary_response:
             return self._backends_response[2]["threads"][0]["hashrate"][2]
+        log.error(f"An error occurred fetching the cached Cuda threads hashrates (15m) data.")
         return False
 
     @property
@@ -1643,6 +1777,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["name"]
+        log.error(f"An error occurred fetching the cached Cuda threads name data.")
         return False
 
     @property
@@ -1655,6 +1790,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["bus_id"]
+        log.error(f"An error occurred fetching the cached Cuda threads bus ID data.")
         return False
 
     @property
@@ -1667,6 +1803,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["smx"]
+        log.error(f"An error occurred fetching the cached Cuda threads smx data.")
         return False
 
     @property
@@ -1679,18 +1816,20 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["arch"]
+        log.error(f"An error occurred fetching the cached Cuda threads arch data.")
         return False
 
     @property
     def be_cuda_threads_global_mem(self) -> int | bool:
         """
-        Retrieves the cached Cuda current threads global mem info from the backends data.
+        Retrieves the cached Cuda current threads global memory info from the backends data.
 
         Returns:
             int: Current threads global mem info, or False if not available.
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["global_mem"]
+        log.error(f"An error occurred fetching the cached Cuda threads global memory data.")
         return False
 
     @property
@@ -1703,6 +1842,7 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["clock"]
+        log.error(f"An error occurred fetching the cached Cuda threads clock info data.")
         return False
 
     @property
@@ -1715,4 +1855,5 @@ class XMRigAPI:
         """
         if self._backends_response and "threads" in self._backends_response[2]:
             return self._backends_response[2]["threads"][0]["memory_clock"]
+        log.error(f"An error occurred fetching the cached Cuda threads memory clock data.")
         return False
