@@ -106,7 +106,7 @@ class XMRigAPI:
             print(f"An error occurred setting the Authorization Header: {e}")
             return False
 
-    def get_summary(self) -> requests.Response | bool:
+    def get_summary(self) -> requests.Response.json | bool:
         """
         Fetches the summary data from the XMRig API.
 
@@ -125,7 +125,7 @@ class XMRigAPI:
             print(f"An error occurred while connecting to {self._summary_url}: {e}")
             return False
 
-    def get_backends(self) -> requests.Response | bool:
+    def get_backends(self) -> requests.Response.json | bool:
         """
         Fetches the backends data from the XMRig API.
 
@@ -144,7 +144,7 @@ class XMRigAPI:
             print(f"An error occurred while connecting to {self._backends_url}: {e}")
             return False
 
-    def get_config(self) -> requests.Response | bool:
+    def get_config(self) -> requests.Response.json | bool:
         """
         Fetches the config data from the XMRig API.
 
