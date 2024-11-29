@@ -109,12 +109,12 @@ class XMRigAPI:
             log.error(f"An error occurred setting the Authorization Header: {e}")
             return False
 
-    def get_summary(self) -> requests.Response.json | bool:
+    def update_summary(self) -> bool:
         """
-        Fetches the summary data from the XMRig API.
+        Updates the cached summary data from the XMRig API.
 
         Returns:
-            dict: Parsed JSON response from the summary endpoint, or False if an error occurred.
+            dict: True if the cached data is successfully updated or False if an error occurred.
         """
         try:
             summary_response = requests.get(
@@ -125,17 +125,17 @@ class XMRigAPI:
             summary_response.raise_for_status()
             self._summary_response = summary_response.json()
             log.info(f"Summary endpoint successfully fetched.")
-            return summary_response.json()
+            return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred while connecting to {self._summary_url}: {e}")
             return False
 
-    def get_backends(self) -> requests.Response.json | bool:
+    def update_backends(self) -> bool:
         """
-        Fetches the backends data from the XMRig API.
+        Updates the cached backends data from the XMRig API.
 
         Returns:
-            dict: Parsed JSON response from the backends endpoint, or False if an error occurred.
+            dict: True if the cached data is successfully updated or False if an error occurred.
         """
         try:
             backends_response = requests.get(
@@ -146,17 +146,17 @@ class XMRigAPI:
             backends_response.raise_for_status()
             self._backends_response = backends_response.json()
             log.info(f"Backends endpoint successfully fetched.")
-            return backends_response.json()
+            return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred while connecting to {self._backends_url}: {e}")
             return False
 
-    def get_config(self) -> requests.Response.json | bool:
+    def update_config(self) -> bool:
         """
-        Fetches the config data from the XMRig API.
+        Updates the cached config data from the XMRig API.
 
         Returns:
-            dict: Parsed JSON response from the config endpoint (GET), or False if an error occurred.
+            dict: True if the cached data is successfully updated, or False if an error occurred.
         """
         try:
             config_response = requests.get(
@@ -167,14 +167,14 @@ class XMRigAPI:
             config_response.raise_for_status()
             self._config_response = config_response.json()
             log.info(f"Config endpoint successfully fetched.")
-            return config_response.json()
+            return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred while connecting to {self._config_url}: {e}")
             return False
 
     def post_config(self, config: dict) -> bool:
         """
-        Updates the config data via the XMRig API.
+        Updates the miners config data via the XMRig API.
 
         Returns:
             bool: True if the config was changed successfully, or False if an error occurred.
@@ -200,10 +200,10 @@ class XMRigAPI:
             bool: True if successfull, or False if an error occurred.
         """
         try:
-            self._summary_response = self.get_summary()
-            self._backends_response = self.get_backends()
+            self.update_summary()
+            self.update_backends()
             if self._access_token != None:
-                self._config_response = self.get_config()
+                self.update_config()
             log.info(f"All endpoints successfully fetched.")
             return True
         except Exception as e:
