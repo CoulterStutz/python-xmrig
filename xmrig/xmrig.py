@@ -91,7 +91,7 @@ class XMRigAPI:
             "jsonrpc": "2.0",
             "id": 1,
         }
-        self.get_all_responses()
+        self.update_all_responses()
         log.info("XMRigAPI initialized.")
 
     def _set_auth_header(self) -> bool:
@@ -192,7 +192,7 @@ class XMRigAPI:
             log.error(f"An error occurred while connecting to {self._config_url}: {e}")
             return False
 
-    def get_all_responses(self) -> bool:
+    def update_all_responses(self) -> bool:
         """
         Retrieves all responses from the API.
 
@@ -279,16 +279,13 @@ class XMRigAPI:
             bool: True if the miner was successfully started, or False if an error occurred.
         """
         try:
-            self.get_config()
+            self.update_config()
             self.post_config()
             log.info(f"Miner successfully started.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred starting the miner: {e}")
             return False
-    
-    # TODO: Add logging to example in README
-    # TODO: Add try/except blocks with log.debug inside try block for returned cached data
 
     @property
     def summary(self) -> dict |bool:
@@ -1261,12 +1258,12 @@ class XMRigAPI:
         Returns:
             list: List of enabled backends, or False if not available.
         """
-        types = []
+        backend_types = []
         if self._backends_response:
             for i in self._backends_response:
                 if "type" in i and i["enabled"] == True:
-                    types.append(i["type"])
-            return types
+                    backend_types.append(i["type"])
+            return backend_types
         log.error(f"An error occurred fetching the cached enabled backends data.")
         return False
 
