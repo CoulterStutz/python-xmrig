@@ -92,7 +92,7 @@ class XMRigAPI:
             "id": 1,
         }
         self.update_all_responses()
-        log.info("XMRigAPI initialized.")
+        log.info(f"XMRigAPI initialized for {self._base_url}")
 
     def _set_auth_header(self) -> bool:
         """
