@@ -103,7 +103,7 @@ class XMRigAPI:
         """
         try:
             self._headers['Authorization'] = f"Bearer {self._access_token}"
-            log.info(f"Authorization header successfully changed.")
+            log.debug(f"Authorization header successfully changed.")
             return True
         except Exception as e:
             log.error(f"An error occurred setting the Authorization Header: {e}")
@@ -124,7 +124,7 @@ class XMRigAPI:
             # Raise an HTTPError for bad responses (4xx and 5xx)
             summary_response.raise_for_status()
             self._summary_response = summary_response.json()
-            log.info(f"Summary endpoint successfully fetched.")
+            log.debug(f"Summary endpoint successfully fetched.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred while connecting to {self._summary_url}: {e}")
@@ -145,7 +145,7 @@ class XMRigAPI:
             # Raise an HTTPError for bad responses (4xx and 5xx)
             backends_response.raise_for_status()
             self._backends_response = backends_response.json()
-            log.info(f"Backends endpoint successfully fetched.")
+            log.debug(f"Backends endpoint successfully fetched.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred while connecting to {self._backends_url}: {e}")
@@ -166,7 +166,7 @@ class XMRigAPI:
             # Raise an HTTPError for bad responses (4xx and 5xx)
             config_response.raise_for_status()
             self._config_response = config_response.json()
-            log.info(f"Config endpoint successfully fetched.")
+            log.debug(f"Config endpoint successfully fetched.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred while connecting to {self._config_url}: {e}")
@@ -186,7 +186,7 @@ class XMRigAPI:
                 raise XMRigAuthorizationError()
             # Raise an HTTPError for bad responses (4xx and 5xx)
             self._post_config_response.raise_for_status()
-            log.info(f"Config endpoint successfully updated.")
+            log.debug(f"Config endpoint successfully updated.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred while connecting to {self._config_url}: {e}")
@@ -204,7 +204,7 @@ class XMRigAPI:
             self.update_backends()
             if self._access_token != None:
                 self.update_config()
-            log.info(f"All endpoints successfully fetched.")
+            log.debug(f"All endpoints successfully fetched.")
             return True
         except Exception as e:
             log.error(f"An error occurred fetching all the API endpoints: {e}")
@@ -223,7 +223,7 @@ class XMRigAPI:
             payload["method"] = "pause"
             response = requests.post(url, json=payload, headers=self._headers)
             response.raise_for_status()
-            log.info(f"Miner successfully paused.")
+            log.debug(f"Miner successfully paused.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred pausing the miner: {e}")
@@ -242,7 +242,7 @@ class XMRigAPI:
             payload["method"] = "resume"
             response = requests.post(url, json=payload, headers=self._headers)
             response.raise_for_status()
-            log.info(f"Miner successfully resumed.")
+            log.debug(f"Miner successfully resumed.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred restarting the miner: {e}")
@@ -261,7 +261,7 @@ class XMRigAPI:
             payload["method"] = "stop"
             response = requests.post(url, json=payload, headers=self._headers)
             response.raise_for_status()
-            log.info(f"Miner successfully stopped.")
+            log.debug(f"Miner successfully stopped.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred stopping the miner: {e}")
@@ -281,7 +281,7 @@ class XMRigAPI:
         try:
             self.update_config()
             self.post_config()
-            log.info(f"Miner successfully started.")
+            log.debug(f"Miner successfully started.")
             return True
         except requests.exceptions.RequestException as e:
             log.error(f"An error occurred starting the miner: {e}")
