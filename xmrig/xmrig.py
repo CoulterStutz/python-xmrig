@@ -288,18 +288,19 @@ class XMRigAPI:
             return False
 
     @property
-    def summary(self) -> dict |bool:
+    def summary(self) -> dict | bool:
         """
         Retrieves the entire cached summary endpoint data.
 
         Returns:
             dict: Current summary response, or False if not available.
         """
-        if self._summary_response:
+        try:
             log.debug(self._summary_response)
             return self._summary_response
-        log.error(f"An error occurred fetching the cached summary data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached summary data: {e}")
+            return False
 
     @property
     def backends(self) -> dict | bool:
@@ -309,11 +310,12 @@ class XMRigAPI:
         Returns:
             dict: Current backends response, or False if not available.
         """
-        if self._backends_response:
+        try:
             log.debug(self._backends_response)
             return self._backends_response
-        log.error(f"An error occurred fetching the cached backends data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached backends data: {e}")
+            return False
 
     @property
     def config(self) -> dict | bool:
@@ -323,11 +325,14 @@ class XMRigAPI:
         Returns:
             dict: Current config response, or False if not available.
         """
-        if self._config_response:
+        try:
             log.debug(self._config_response)
             return self._config_response
-        log.error(f"An error occurred fetching the cached config data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached config data: {e}")
+            return False
+
+    # ***** data provided by summary endpoint
 
     @property
     def sum_id(self) -> str | bool:
@@ -337,11 +342,12 @@ class XMRigAPI:
         Returns:
             str: ID information, or False if not available.
         """
-        if self._summary_response and "id" in self._summary_response:
+        try:
             log.debug(self._summary_response["id"])
             return self._summary_response["id"]
-        log.error(f"An error occurred fetching the cached ID information data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached ID information data: {e}")
+            return False
 
     @property
     def sum_worker_id(self) -> str | bool:
@@ -351,11 +357,12 @@ class XMRigAPI:
         Returns:
             str: Worker ID information, or False if not available.
         """
-        if self._summary_response and "worker_id" in self._summary_response:
+        try:
             log.debug(self._summary_response["worker_id"])
             return self._summary_response["worker_id"]
-        log.error(f"An error occurred fetching the cached worker ID information data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached worker ID information data: {e}")
+            return False
 
     @property
     def sum_uptime(self) -> int | bool:
@@ -365,11 +372,12 @@ class XMRigAPI:
         Returns:
             int: Current uptime in seconds, or False if not available.
         """
-        if self._summary_response and "uptime" in self._summary_response:
+        try:
             log.debug(self._summary_response["uptime"])
             return self._summary_response["uptime"]
-        log.error(f"An error occurred fetching the cached current uptime data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current uptime data: {e}")
+            return False
 
     @property
     def sum_uptime_readable(self) -> str | bool:
@@ -379,11 +387,12 @@ class XMRigAPI:
         Returns:
             str: Uptime in the format "days, hours:minutes:seconds", or False if not available.
         """
-        if self._summary_response and "uptime" in self._summary_response:
+        try:
             log.debug(str(timedelta(seconds=self._summary_response["uptime"])))
             return str(timedelta(seconds=self._summary_response["uptime"]))
-        log.error(f"An error occurred fetching the cached current uptime in a human-readable format data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current uptime in a human-readable format data: {e}")
+            return False
 
     @property
     def sum_restricted(self) -> bool | None:
@@ -393,11 +402,12 @@ class XMRigAPI:
         Returns:
             bool: Current restricted status, or None if not available.
         """
-        if self._summary_response and "restricted" in self._summary_response:
+        try:
             log.debug(self._summary_response["restricted"])
             return self._summary_response["restricted"]
-        log.error(f"An error occurred fetching the cached restricted status data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached restricted status data: {e}")
+            return None
 
     @property
     def sum_resources(self) -> dict | bool:
@@ -407,11 +417,12 @@ class XMRigAPI:
         Returns:
             dict: Resources information, or False if not available.
         """
-        if self._summary_response and "resources" in self._summary_response:
+        try:
             log.debug(self._summary_response["resources"])
             return self._summary_response["resources"]
-        log.error(f"An error occurred fetching the cached resources data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached resources data: {e}")
+            return False
 
     @property
     def sum_memory_usage(self) -> dict | bool:
@@ -421,11 +432,12 @@ class XMRigAPI:
         Returns:
             dict: Memory usage information, or False if not available.
         """
-        if self._summary_response and "memory" in self._summary_response["resources"]:
+        try:
             log.debug(self._summary_response["resources"]["memory"])
             return self._summary_response["resources"]["memory"]
-        log.error(f"An error occurred fetching the cached memory usage data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached memory usage data: {e}")
+            return False
 
     @property
     def sum_free_memory(self) -> int | bool:
@@ -435,11 +447,12 @@ class XMRigAPI:
         Returns:
             int: Free memory information, or False if not available.
         """
-        if self._summary_response and "free" in self._summary_response["resources"]["memory"]:
+        try:
             log.debug(self._summary_response["resources"]["memory"]["free"])
             return self._summary_response["resources"]["memory"]["free"]
-        log.error(f"An error occurred fetching the cached free memory data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached free memory data: {e}")
+            return False
 
     @property
     def sum_total_memory(self) -> int | bool:
@@ -449,11 +462,12 @@ class XMRigAPI:
         Returns:
             int: Total memory information, or False if not available.
         """
-        if self._summary_response and "total" in self._summary_response["resources"]["memory"]:
+        try:
             log.debug(self._summary_response["resources"]["memory"]["total"])
             return self._summary_response["resources"]["memory"]["total"]
-        log.error(f"An error occurred fetching the cached total memory data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached total memory data: {e}")
+            return False
 
     @property
     def sum_resident_set_memory(self) -> int | bool:
@@ -463,11 +477,12 @@ class XMRigAPI:
         Returns:
             int: Resident set memory information, or False if not available.
         """
-        if self._summary_response and "resident_set" in self._summary_response["resources"]["memory"]:
+        try:
             log.debug(self._summary_response["resources"]["memory"]["resident_set_memory"])
             return self._summary_response["resources"]["memory"]["resident_set_memory"]
-        log.error(f"An error occurred fetching the cached resident set memory data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached resident set memory data: {e}")
+            return False
 
     @property
     def sum_load_average(self) -> list | bool:
@@ -477,11 +492,12 @@ class XMRigAPI:
         Returns:
             list: Load average information, or False if not available.
         """
-        if self._summary_response and "load_average" in self._summary_response["resources"]:
+        try:
             log.debug(self._summary_response["resources"]["load_average"])
             return self._summary_response["resources"]["load_average"]
-        log.error(f"An error occurred fetching the cached load average data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached load average data: {e}")
+            return False
 
     @property
     def sum_hardware_concurrency(self) -> int | bool:
@@ -491,11 +507,12 @@ class XMRigAPI:
         Returns:
             int: Hardware concurrency information, or False if not available.
         """
-        if self._summary_response and "hardware_concurrency" in self._summary_response["resources"]:
+        try:
             log.debug(self._summary_response["resources"]["hardware_concurrency"])
             return self._summary_response["resources"]["hardware_concurrency"]
-        log.error(f"An error occurred fetching the cached hardware concurrency data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached hardware concurrency data: {e}")
+            return False
 
     @property
     def sum_features(self) -> list | bool:
@@ -505,11 +522,12 @@ class XMRigAPI:
         Returns:
             list: Supported features information, or False if not available.
         """
-        if self._summary_response and "features" in self._summary_response["resources"]:
+        try:
             log.debug(self._summary_response["resources"]["features"])
             return self._summary_response["resources"]["features"]
-        log.error(f"An error occurred fetching the cached features data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached features data: {e}")
+            return False
 
     @property
     def sum_results(self) -> dict | bool:
@@ -519,11 +537,12 @@ class XMRigAPI:
         Returns:
             dict: Results information, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"])
             return self._summary_response["results"]
-        log.error(f"An error occurred fetching the cached results data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached results data: {e}")
+            return False
 
     @property
     def sum_current_difficulty(self) -> int | bool:
@@ -533,11 +552,12 @@ class XMRigAPI:
         Returns:
             int: Current difficulty, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"]["diff_current"])
             return self._summary_response["results"]["diff_current"]
-        log.error(f"An error occurred fetching the cached current difficulty data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current difficulty data: {e}")
+            return False
 
     @property
     def sum_good_shares(self) -> int | bool:
@@ -547,11 +567,12 @@ class XMRigAPI:
         Returns:
             int: Good shares, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"]["shares_good"])
             return self._summary_response["results"]["shares_good"]
-        log.error(f"An error occurred fetching the cached good shares data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached good shares data: {e}")
+            return False
 
     @property
     def sum_total_shares(self) -> int | bool:
@@ -561,11 +582,12 @@ class XMRigAPI:
         Returns:
             int: Total shares, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"]["shares_total"])
             return self._summary_response["results"]["shares_total"]
-        log.error(f"An error occurred fetching the cached total shares data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached total shares data: {e}")
+            return False
 
     @property
     def sum_avg_time(self) -> int | bool:
@@ -575,11 +597,12 @@ class XMRigAPI:
         Returns:
             int: Average time information, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"]["avg_time"])
             return self._summary_response["results"]["avg_time"]
-        log.error(f"An error occurred fetching the cached average time data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached average time data: {e}")
+            return False
 
     @property
     def sum_avg_time_ms(self) -> int | bool:
@@ -589,11 +612,12 @@ class XMRigAPI:
         Returns:
             int: Average time in `ms` information, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"]["avg_time_ms"])
             return self._summary_response["results"]["avg_time_ms"]
-        log.error(f"An error occurred fetching the cached average time in `ms` data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached average time in `ms` data: {e}")
+            return False
 
     @property
     def sum_total_hashes(self) -> int | bool:
@@ -603,11 +627,12 @@ class XMRigAPI:
         Returns:
             int: Total number of hashes, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"]["hashes_total"])
             return self._summary_response["results"]["hashes_total"]
-        log.error(f"An error occurred fetching the cached total hashes data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached total hashes data: {e}")
+            return False
 
     @property
     def sum_best_results(self) -> list | bool:
@@ -617,11 +642,12 @@ class XMRigAPI:
         Returns:
             list: Best results, or False if not available.
         """
-        if self._summary_response and "results" in self._summary_response:
+        try:
             log.debug(self._summary_response["results"]["best"])
             return self._summary_response["results"]["best"]
-        log.error(f"An error occurred fetching the cached best results data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached best results data: {e}")
+            return False
 
     @property
     def sum_algorithm(self) -> str | bool:
@@ -631,11 +657,12 @@ class XMRigAPI:
         Returns:
             str: Current mining algorithm, or False if not available.
         """
-        if self._summary_response and "algo" in self._summary_response:
+        try:
             log.debug(self._summary_response["algo"])
             return self._summary_response["algo"]
-        log.error(f"An error occurred fetching the cached current mining alogorithm data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current mining alogorithm data: {e}")
+            return False
 
     @property
     def sum_connection(self) -> dict | bool:
@@ -645,11 +672,12 @@ class XMRigAPI:
         Returns:
             dict: Connection information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"])
             return self._summary_response["connection"]
-        log.error(f"An error occurred fetching the cached connection data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached connection data: {e}")
+            return False
 
     @property
     def sum_pool_info(self) -> str | bool:
@@ -659,11 +687,12 @@ class XMRigAPI:
         Returns:
             str: Pool information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["pool"])
             return self._summary_response["connection"]["pool"]
-        log.error(f"An error occurred fetching the cached pool information data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool information data: {e}")
+            return False
 
     @property
     def sum_pool_ip_address(self) -> str | bool:
@@ -673,11 +702,12 @@ class XMRigAPI:
         Returns:
             str: IP address, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["ip"])
             return self._summary_response["connection"]["ip"]
-        log.error(f"An error occurred fetching the cached IP address data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached IP address data: {e}")
+            return False
 
     @property
     def sum_pool_uptime(self) -> int | bool:
@@ -687,11 +717,12 @@ class XMRigAPI:
         Returns:
             int: Pool uptime information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["uptime"])
             return self._summary_response["connection"]["uptime"]
-        log.error(f"An error occurred fetching the cached pool uptime data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool uptime data: {e}")
+            return False
 
     @property
     def sum_pool_uptime_ms(self) -> int | bool:
@@ -701,11 +732,12 @@ class XMRigAPI:
         Returns:
             int: Pool uptime in ms, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["uptime_ms"])
             return self._summary_response["connection"]["uptime_ms"]
-        log.error(f"An error occurred fetching the cached pool uptime in `ms` data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool uptime in `ms` data: {e}")
+            return False
 
     @property
     def sum_pool_ping(self) -> int | bool:
@@ -715,11 +747,12 @@ class XMRigAPI:
         Returns:
             int: Pool ping information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["ping"])
             return self._summary_response["connection"]["ping"]
-        log.error(f"An error occurred fetching the cached pool ping data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool ping data: {e}")
+            return False
 
     @property
     def sum_pool_failures(self) -> int | bool:
@@ -729,11 +762,12 @@ class XMRigAPI:
         Returns:
             int: Pool failures information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["failures"])
             return self._summary_response["connection"]["failures"]
-        log.error(f"An error occurred fetching the cached pool failures data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool failures data: {e}")
+            return False
 
     @property
     def sum_pool_tls(self) -> bool | None:
@@ -743,11 +777,12 @@ class XMRigAPI:
         Returns:
             bool: Pool tls status, or None if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["tls"])
             return self._summary_response["connection"]["tls"]
-        log.error(f"An error occurred fetching the cached pool tls data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool tls data: {e}")
+            return None
 
     @property
     def sum_pool_tls_fingerprint(self) -> str | bool:
@@ -757,11 +792,12 @@ class XMRigAPI:
         Returns:
             str: Pool tls fingerprint information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["tls-fingerprint"])
             return self._summary_response["connection"]["tls-fingerprint"]
-        log.error(f"An error occurred fetching the cached pool tls fingerprint data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool tls fingerprint data: {e}")
+            return False
 
     @property
     def sum_pool_algo(self) -> str | bool:
@@ -771,11 +807,12 @@ class XMRigAPI:
         Returns:
             str: Pool algorithm information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["algo"])
             return self._summary_response["connection"]["algo"]
-        log.error(f"An error occurred fetching the cached pool algorithm data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool algorithm data: {e}")
+            return False
 
     @property
     def sum_pool_diff(self) -> int | bool:
@@ -785,11 +822,12 @@ class XMRigAPI:
         Returns:
             int: Pool difficulty information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["diff"])
             return self._summary_response["connection"]["diff"]
-        log.error(f"An error occurred fetching the cached pool difficulty data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool difficulty data: {e}")
+            return False
 
     @property
     def sum_pool_accepted_jobs(self) -> int | bool:
@@ -799,11 +837,12 @@ class XMRigAPI:
         Returns:
             int: Number of accepted jobs, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["accepted"])
             return self._summary_response["connection"]["accepted"]
-        log.error(f"An error occurred fetching the cached pool accepted jobs data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool accepted jobs data: {e}")
+            return False
 
     @property
     def sum_pool_rejected_jobs(self) -> int | bool:
@@ -813,11 +852,12 @@ class XMRigAPI:
         Returns:
             int: Number of rejected jobs, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["rejected"])
             return self._summary_response["connection"]["rejected"]
-        log.error(f"An error occurred fetching the cached pool rejected jobs data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool rejected jobs data: {e}")
+            return False
 
     @property
     def sum_pool_average_time(self) -> int | bool:
@@ -827,25 +867,27 @@ class XMRigAPI:
         Returns:
             int: Pool average time information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["avg_time"])
             return self._summary_response["connection"]["avg_time"]
-        log.error(f"An error occurred fetching the cached pool average time data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool average time data: {e}")
+            return False
 
     @property
     def sum_pool_average_time_ms(self) -> int | bool:
         """
-        Retrieves the cached pool average in ms from the summary data.
+        Retrieves the cached pool average time in ms from the summary data.
 
         Returns:
-            int: Pool average in ms, or False if not available.
+            int: Pool average time in ms, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["avg_time_ms"])
             return self._summary_response["connection"]["avg_time_ms"]
-        log.error(f"An error occurred fetching the cached pool average time in `ms` data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool average time in `ms` data: {e}")
+            return False
 
     @property
     def sum_pool_total_hashes(self) -> int | bool:
@@ -855,11 +897,12 @@ class XMRigAPI:
         Returns:
             int: Pool total hashes information, or False if not available.
         """
-        if self._summary_response and "connection" in self._summary_response:
+        try:
             log.debug(self._summary_response["connection"]["hashes_total"])
             return self._summary_response["connection"]["hashes_total"]
-        log.error(f"An error occurred fetching the cached pool total hashes data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached pool total hashes data: {e}")
+            return False
 
     @property
     def sum_version(self) -> str | bool:
@@ -869,11 +912,12 @@ class XMRigAPI:
         Returns:
             str: Version information, or False if not available.
         """
-        if self._summary_response and "version" in self._summary_response:
+        try:
             log.debug(self._summary_response["version"])
             return self._summary_response["version"]
-        log.error(f"An error occurred fetching the cached version data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached version data: {e}")
+            return False
 
     @property
     def sum_kind(self) -> str | bool:
@@ -883,11 +927,12 @@ class XMRigAPI:
         Returns:
             str: Kind information, or False if not available.
         """
-        if self._summary_response and "kind" in self._summary_response:
+        try:
             log.debug(self._summary_response["kind"])
             return self._summary_response["kind"]
-        log.error(f"An error occurred fetching the cached kind data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached kind data: {e}")
+            return False
 
     @property
     def sum_ua(self) -> str | bool:
@@ -897,11 +942,12 @@ class XMRigAPI:
         Returns:
             str: User agent information, or False if not available.
         """
-        if self._summary_response and "ua" in self._summary_response:
+        try:
             log.debug(self._summary_response["ua"])
             return self._summary_response["ua"]
-        log.error(f"An error occurred fetching the cached user agent data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached user agent data: {e}")
+            return False
 
     @property
     def sum_cpu_info(self) -> dict | bool:
@@ -911,11 +957,12 @@ class XMRigAPI:
         Returns:
             dict: CPU information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"])
             return self._summary_response["cpu"]
-        log.error(f"An error occurred fetching the cached CPU data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU data: {e}")
+            return False
 
     @property
     def sum_cpu_brand(self) -> str | bool:
@@ -925,11 +972,12 @@ class XMRigAPI:
         Returns:
             str: CPU brand information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["brand"])
             return self._summary_response["cpu"]["brand"]
-        log.error(f"An error occurred fetching the cached CPU brand data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU brand data: {e}")
+            return False
 
     @property
     def sum_cpu_family(self) -> int | bool:
@@ -939,11 +987,12 @@ class XMRigAPI:
         Returns:
             int: CPU family information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["family"])
             return self._summary_response["cpu"]["family"]
-        log.error(f"An error occurred fetching the cached CPU family data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU family data: {e}")
+            return False
 
     @property
     def sum_cpu_model(self) -> int | bool:
@@ -953,11 +1002,12 @@ class XMRigAPI:
         Returns:
             int: CPU model information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["model"])
             return self._summary_response["cpu"]["model"]
-        log.error(f"An error occurred fetching the cached CPU model data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU model data: {e}")
+            return False
 
     @property
     def sum_cpu_stepping(self) -> int | bool:
@@ -967,11 +1017,12 @@ class XMRigAPI:
         Returns:
             int: CPU stepping information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["stepping"])
             return self._summary_response["cpu"]["stepping"]
-        log.error(f"An error occurred fetching the cached CPU stepping data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU stepping data: {e}")
+            return False
 
     @property
     def sum_cpu_proc_info(self) -> int | bool:
@@ -981,67 +1032,72 @@ class XMRigAPI:
         Returns:
             int: CPU frequency information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["proc_info"])
             return self._summary_response["cpu"]["proc_info"]
-        log.error(f"An error occurred fetching the cached CPU frequency data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU frequency data: {e}")
+            return False
 
     @property
-    def sum_cpu_aes(self) -> int | bool:
+    def sum_cpu_aes(self) -> bool | None:
         """
         Retrieves the cached CPU aes information from the summary data.
 
         Returns:
-            int: CPU aes information, or False if not available.
+            bool: CPU aes information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["aes"])
             return self._summary_response["cpu"]["aes"]
-        log.error(f"An error occurred fetching the cached CPU aes data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU aes data: {e}")
+            return None
 
     @property
-    def sum_cpu_avx2(self) -> int | bool:
+    def sum_cpu_avx2(self) -> bool | None:
         """
         Retrieves the cached CPU avx2 information from the summary data.
 
         Returns:
-            int: CPU avx2 information, or False if not available.
+            bool: CPU avx2 information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["avx2"])
             return self._summary_response["cpu"]["avx2"]
-        log.error(f"An error occurred fetching the cached CPU avx2 data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU avx2 data: {e}")
+            return None
 
     @property
-    def sum_cpu_x64(self) -> int | bool:
+    def sum_cpu_x64(self) -> bool | None:
         """
         Retrieves the cached CPU x64 information from the summary data.
 
         Returns:
-            int: CPU x64 information, or False if not available.
+            bool: CPU x64 information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["x64"])
             return self._summary_response["cpu"]["x64"]
-        log.error(f"An error occurred fetching the cached CPU x64 data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU x64 data: {e}")
+            return None
 
     @property
-    def sum_cpu_64_bit(self) -> int | bool:
+    def sum_cpu_64_bit(self) -> bool | None:
         """
         Retrieves the cached CPU 64-bit information from the summary data.
 
         Returns:
-            int: CPU 64-bit information, or False if not available.
+            bool: CPU 64-bit information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["64_bit"])
             return self._summary_response["cpu"]["64_bit"]
-        log.error(f"An error occurred fetching the cached CPU x64-bit data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU x64-bit data: {e}")
+            return None
 
     @property
     def sum_cpu_l2(self) -> int | bool:
@@ -1051,11 +1107,12 @@ class XMRigAPI:
         Returns:
             int: CPU l2 cache information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["l2"])
             return self._summary_response["cpu"]["l2"]
-        log.error(f"An error occurred fetching the cached CPU l2 cache data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU l2 cache data: {e}")
+            return False
 
     @property
     def sum_cpu_l3(self) -> int | bool:
@@ -1065,11 +1122,12 @@ class XMRigAPI:
         Returns:
             int: CPU l3 cache information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["l3"])
             return self._summary_response["cpu"]["l3"]
-        log.error(f"An error occurred fetching the cached CPU l3 cache data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU l3 cache data: {e}")
+            return False
 
     @property
     def sum_cpu_cores(self) -> int | bool:
@@ -1079,11 +1137,12 @@ class XMRigAPI:
         Returns:
             int: CPU cores information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["cores"])
             return self._summary_response["cpu"]["cores"]
-        log.error(f"An error occurred fetching the cached CPU cores data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU cores data: {e}")
+            return False
 
     @property
     def sum_cpu_threads(self) -> int | bool:
@@ -1093,11 +1152,12 @@ class XMRigAPI:
         Returns:
             int: CPU threads information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["threads"])
             return self._summary_response["cpu"]["threads"]
-        log.error(f"An error occurred fetching the cached CPU threads data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU threads data: {e}")
+            return False
 
     @property
     def sum_cpu_packages(self) -> int | bool:
@@ -1107,11 +1167,12 @@ class XMRigAPI:
         Returns:
             int: CPU packages information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["packages"])
             return self._summary_response["cpu"]["packages"]
-        log.error(f"An error occurred fetching the cached CPU packages data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU packages data: {e}")
+            return False
 
     @property
     def sum_cpu_nodes(self) -> int | bool:
@@ -1121,11 +1182,12 @@ class XMRigAPI:
         Returns:
             int: CPU nodes information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["nodes"])
             return self._summary_response["cpu"]["nodes"]
-        log.error(f"An error occurred fetching the cached CPU nodes data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU nodes data: {e}")
+            return False
 
     @property
     def sum_cpu_backend(self) -> str | bool:
@@ -1135,11 +1197,12 @@ class XMRigAPI:
         Returns:
             str: CPU backend information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["backend"])
             return self._summary_response["cpu"]["backend"]
-        log.error(f"An error occurred fetching the cached CPU backend data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU backend data: {e}")
+            return False
 
     @property
     def sum_cpu_msr(self) -> str | bool:
@@ -1149,11 +1212,12 @@ class XMRigAPI:
         Returns:
             str: CPU msr information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["msr"])
             return self._summary_response["cpu"]["msr"]
-        log.error(f"An error occurred fetching the cached CPU msr data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU msr data: {e}")
+            return False
 
     @property
     def sum_cpu_assembly(self) -> str | bool:
@@ -1163,11 +1227,12 @@ class XMRigAPI:
         Returns:
             str: CPU assembly information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["assembly"])
             return self._summary_response["cpu"]["assembly"]
-        log.error(f"An error occurred fetching the cached CPU assembly data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU assembly data: {e}")
+            return False
 
     @property
     def sum_cpu_arch(self) -> str | bool:
@@ -1177,11 +1242,12 @@ class XMRigAPI:
         Returns:
             str: CPU architecture information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["arch"])
             return self._summary_response["cpu"]["arch"]
-        log.error(f"An error occurred fetching the cached CPU architecture data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU architecture data: {e}")
+            return False
 
     @property
     def sum_cpu_flags(self) -> list | bool:
@@ -1191,11 +1257,12 @@ class XMRigAPI:
         Returns:
             list: CPU flags information, or False if not available.
         """
-        if self._summary_response and "cpu" in self._summary_response:
+        try:
             log.debug(self._summary_response["cpu"]["flags"])
             return self._summary_response["cpu"]["flags"]
-        log.error(f"An error occurred fetching the cached CPU flags data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU flags data: {e}")
+            return False
 
     @property
     def sum_donate_level(self) -> int | bool:
@@ -1205,25 +1272,27 @@ class XMRigAPI:
         Returns:
             int: Donation level information, or False if not available.
         """
-        if self._summary_response and "donate_level" in self._summary_response:
+        try:
             log.debug(self._summary_response["donate_level"])
             return self._summary_response["donate_level"]
-        log.error(f"An error occurred fetching the cached donation level data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached donation level data: {e}")
+            return False
 
     @property
-    def sum_paused(self) -> int | bool:
+    def sum_paused(self) -> bool | None:
         """
         Retrieves the cached paused status of the miner from the summary data.
 
         Returns:
-            int: True if the miner is paused, False otherwise, or False if not available.
+            bool: True if the miner is paused, False otherwise, or None if not available.
         """
-        if self._summary_response and "paused" in self._summary_response:
+        try:
             log.debug(self._summary_response["paused"])
             return self._summary_response["paused"]
-        log.error(f"An error occurred fetching the cached paused status data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached paused status data: {e}")
+            return None
 
     @property
     def sum_algorithms(self) -> list | bool:
@@ -1233,11 +1302,12 @@ class XMRigAPI:
         Returns:
             list: Algorithms information, or False if not available.
         """
-        if self._summary_response and "algorithms" in self._summary_response:
+        try:
             log.debug(self._summary_response["algorithms"])
             return self._summary_response["algorithms"]
-        log.error(f"An error occurred fetching the cached algorithms data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached algorithms data: {e}")
+            return False
 
     @property
     def sum_hashrates(self) -> dict | bool:
@@ -1247,11 +1317,12 @@ class XMRigAPI:
         Returns:
             dict: Current hashrates, or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._summary_response["hashrate"])
             return self._summary_response["hashrate"]
-        log.error(f"An error occurred fetching the cached current hashrates data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current hashrates data: {e}")
+            return False
 
     @property
     def sum_hashrate_10s(self) -> int | bool:
@@ -1261,11 +1332,12 @@ class XMRigAPI:
         Returns:
             int: Current hashrate (10s), or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._summary_response["hashrate"]["total"][0])
             return self._summary_response["hashrate"]["total"][0]
-        log.error(f"An error occurred fetching the cached current hashrate (10s) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current hashrate (10s) data: {e}")
+            return False
 
     @property
     def sum_hashrate_1m(self) -> int | bool:
@@ -1275,11 +1347,12 @@ class XMRigAPI:
         Returns:
             int: Current hashrate (1m), or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._summary_response["hashrate"]["total"][1])
             return self._summary_response["hashrate"]["total"][1]
-        log.error(f"An error occurred fetching the cached current hashrate (1m) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current hashrate (1m) data: {e}")
+            return False
 
     @property
     def sum_hashrate_15m(self) -> int | bool:
@@ -1289,11 +1362,12 @@ class XMRigAPI:
         Returns:
             int: Current hashrate (15m), or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._summary_response["hashrate"]["total"][2])
             return self._summary_response["hashrate"]["total"][2]
-        log.error(f"An error occurred fetching the cached current hashrate (15m) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached current hashrate (15m) data: {e}")
+            return False
 
     @property
     def sum_hashrate_highest(self) -> int | bool:
@@ -1303,11 +1377,12 @@ class XMRigAPI:
         Returns:
             int: Current hashrate (highest), or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._summary_response["hashrate"]["highest"])
             return self._summary_response["hashrate"]["highest"]
-        log.error(f"An error occurred fetching the cached highest hashrate data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached highest hashrate data: {e}")
+            return False
 
     @property
     def sum_hugepages(self) -> list | bool:
@@ -1317,13 +1392,15 @@ class XMRigAPI:
         Returns:
             list: Current hugepages, or False if not available.
         """
-        if self._summary_response and "hugepages" in self._summary_response:
+        try:
             log.debug(self._summary_response["hugepages"])
             return self._summary_response["hugepages"]
-        log.error(f"An error occurred fetching the cached hugepages data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached hugepages data: {e}")
+            return False
 
-    # * Data Provided by the backends endpoint
+    # ***** Data Provided by the backends endpoint
+
     @property
     def enabled_backends(self) -> list | bool:
         """
@@ -1333,12 +1410,16 @@ class XMRigAPI:
             list: List of enabled backends, or False if not available.
         """
         backend_types = []
-        if self._backends_response:
+        try:
             for i in self._backends_response:
                 if "type" in i and i["enabled"] == True:
                     backend_types.append(i["type"])
             log.debug(backend_types)
             return backend_types
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached enabled backends data: {e}")
+            return False
+    
     @property
     def be_cpu_type(self) -> str | bool:
         """
@@ -1362,11 +1443,12 @@ class XMRigAPI:
         Returns:
             bool: Bool representing enabled status, or None if not available.
         """
-        if self._backends_response and "enabled" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["enabled"])
             return self._backends_response[0]["enabled"]
-        log.error(f"An error occurred fetching the cached CPU enabled status data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU enabled status data: {e}")
+            return None
 
     @property
     def be_cpu_algo(self) -> str | bool:
@@ -1374,13 +1456,14 @@ class XMRigAPI:
         Retrieves the cached CPU algorithm information from the backends data.
 
         Returns:
-            str: Bool representing algorithm information, or False if not available.
+            str: Algorithm information, or False if not available.
         """
-        if self._backends_response and "algo" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["algo"])
             return self._backends_response[0]["algo"]
-        log.error(f"An error occurred fetching the cached CPU algorithm data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU algorithm data: {e}")
+            return False
 
     @property
     def be_cpu_profile(self) -> str | bool:
@@ -1388,13 +1471,14 @@ class XMRigAPI:
         Retrieves the cached CPU profile information from the backends data.
 
         Returns:
-            str: Bool representing profile information, or False if not available.
+            str: Profile information, or False if not available.
         """
-        if self._backends_response and "profile" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["profile"])
             return self._backends_response[0]["profile"]
-        log.error(f"An error occurred fetching the cached CPU profile data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU profile data: {e}")
+            return False
 
     @property
     def be_cpu_hw_aes(self) -> bool | None:
@@ -1404,11 +1488,12 @@ class XMRigAPI:
         Returns:
             bool: Bool representing hw-aes support status, or None if not available.
         """
-        if self._backends_response and "hw-aes" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["hw-aes"])
             return self._backends_response[0]["hw-aes"]
-        log.error(f"An error occurred fetching the cached CPU hw-aes support data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU hw-aes support data: {e}")
+            return None
 
     @property
     def be_cpu_priority(self) -> int | bool:
@@ -1419,13 +1504,14 @@ class XMRigAPI:
         value `-1` means XMRig doesn't change threads priority at all,
 
         Returns:
-            int: Int representing mining thread priority, or False if not available.
+            int: Mining thread priority, or False if not available.
         """
-        if self._backends_response and "priority" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["priority"])
             return self._backends_response[0]["priority"]
-        log.error(f"An error occurred fetching the cached CPU priority data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU priority data: {e}")
+            return False
 
     @property
     def be_cpu_msr(self) -> bool | None:
@@ -1435,11 +1521,12 @@ class XMRigAPI:
         Returns:
             bool: Bool representing msr information, or None if not available.
         """
-        if self._backends_response and "msr" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["msr"])
             return self._backends_response[0]["msr"]
-        log.error(f"An error occurred fetching the cached CPU msr data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU msr data: {e}")
+            return None
 
     @property
     def be_cpu_asm(self) -> str | bool:
@@ -1447,13 +1534,14 @@ class XMRigAPI:
         Retrieves the cached CPU asm information from the backends data.
 
         Returns:
-            str: Bool representing asm information, or False if not available.
+            str: ASM information, or False if not available.
         """
-        if self._backends_response and "asm" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["asm"])
             return self._backends_response[0]["asm"]
-        log.error(f"An error occurred fetching the cached CPU asm data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU asm data: {e}")
+            return False
 
     @property
     def be_cpu_argon2_impl(self) -> str | bool:
@@ -1461,13 +1549,14 @@ class XMRigAPI:
         Retrieves the cached CPU argon2 implementation information from the backends data.
 
         Returns:
-            str: Bool representing argon2 implementation information, or False if not available.
+            str: Argon2 implementation information, or False if not available.
         """
-        if self._backends_response and "argon2-impl" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["argon2-impl"])
             return self._backends_response[0]["argon2-impl"]
-        log.error(f"An error occurred fetching the cached CPU argon2 implementation data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU argon2 implementation data: {e}")
+            return False
 
     @property
     def be_cpu_hugepages(self) -> list | bool:
@@ -1475,13 +1564,14 @@ class XMRigAPI:
         Retrieves the cached CPU hugepages information from the backends data.
 
         Returns:
-            list: Bool representing hugepages information, or False if not available.
+            list: Hugepages information, or False if not available.
         """
-        if self._backends_response and "hugepages" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["hugepages"])
             return self._backends_response[0]["hugepages"]
-        log.error(f"An error occurred fetching the cached CPU hugepages data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU hugepages data: {e}")
+            return False
 
     @property
     def be_cpu_memory(self) -> int | bool:
@@ -1489,11 +1579,15 @@ class XMRigAPI:
         Retrieves the cached CPU memory information from the backends data.
 
         Returns:
-            int: Bool representing memory information, or False if not available.
+            int: Memory information, or False if not available.
         """
-        if self._backends_response and "memory" in self._backends_response[0]:
+        try:
             log.debug(self._backends_response[0]["memory"])
             return self._backends_response[0]["memory"]
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached CPU memory data: {e}")
+            return False
+    
     @property
     def be_cpu_hashrates(self) -> int | bool:
         """
@@ -1700,11 +1794,12 @@ class XMRigAPI:
         Returns:
             bool: Bool representing enabled information, or None if not available.
         """
-        if self._backends_response and "enabled" in self._backends_response[1]:
+        try:
             log.debug(self._backends_response[1]["enabled"])
             return self._backends_response[1]["enabled"]
-        log.error(f"An error occurred fetching the cached OpenCL enabled data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached OpenCL enabled data: {e}")
+            return None
 
     @property
     def be_opencl_algo(self) -> str | bool:
@@ -1712,13 +1807,14 @@ class XMRigAPI:
         Retrieves the cached OpenCL algorithm information from the backends data.
 
         Returns:
-            str: Bool representing algorithm information, or False if not available.
+            str: Algorithm information, or False if not available.
         """
-        if self._backends_response and "algo" in self._backends_response[1]:
+        try:
             log.debug(self._backends_response[1]["algo"])
             return self._backends_response[1]["algo"]
-        log.error(f"An error occurred fetching the cached OpenCL algorithm data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached OpenCL algorithm data: {e}")
+            return False
 
     @property
     def be_opencl_profile(self) -> str | bool:
@@ -1726,25 +1822,30 @@ class XMRigAPI:
         Retrieves the cached OpenCL profile information from the backends data.
 
         Returns:
-            str: Bool representing profile information, or False if not available.
+            str: Profile information, or False if not available.
         """
-        if self._backends_response and "profile" in self._backends_response[1]:
+        try:
             log.debug(self._backends_response[1]["profile"])
             return self._backends_response[1]["profile"]
-        log.error(f"An error occurred fetching the cached OpenCL profile data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached OpenCL profile data: {e}")
+            return False
 
     @property
-    def be_opencl_platform(self) -> str | bool:
+    def be_opencl_platform(self) -> dict | bool:
         """
         Retrieves the cached OpenCL platform information from the backends data.
 
         Returns:
-            str: Bool representing platform information, or False if not available.
+            dict: Platform information, or False if not available.
         """
-        if self._backends_response and "platform" in self._backends_response[1]:
+        try:
             log.debug(self._backends_response[1]["platform"])
             return self._backends_response[1]["platform"]
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached OpenCL platform data: {e}")
+            return False
+    
     @property
     def be_opencl_platform_index(self) -> int | bool:
         """
@@ -2231,13 +2332,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current type info from the backends data.
 
         Returns:
-            str: Current type info, or False if not available.
+            str: Type info, or False if not available.
         """
-        if self._backends_response and "type" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["type"])
             return self._backends_response[2]["type"]
-        log.error(f"An error occurred fetching the cached Cuda type data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda type data: {e}")
+            return False
 
     @property
     def be_cuda_enabled(self) -> bool | None:
@@ -2245,13 +2347,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current enabled info from the backends data.
 
         Returns:
-            bool: Current enabled info, or None if not available.
+            bool: Current enabled status, or None if not available.
         """
-        if self._backends_response and "enabled" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["enabled"])
             return self._backends_response[2]["enabled"]
-        log.error(f"An error occurred fetching the cached Cuda enabled status data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda enabled status data: {e}")
+            return None
 
     @property
     def be_cuda_algo(self) -> str | bool:
@@ -2259,13 +2362,14 @@ class XMRigAPI:
         Retrieves the cached Cuda algorithm information from the backends data.
 
         Returns:
-            str: Bool representing algorithm information, or False if not available.
+            str: Algorithm information, or False if not available.
         """
-        if self._backends_response and "algo" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["algo"])
             return self._backends_response[2]["algo"]
-        log.error(f"An error occurred fetching the cached Cuda algorithm data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda algorithm data: {e}")
+            return False
 
     @property
     def be_cuda_profile(self) -> str | bool:
@@ -2273,13 +2377,14 @@ class XMRigAPI:
         Retrieves the cached Cuda profile information from the backends data.
 
         Returns:
-            str: Bool representing profile information, or False if not available.
+            str: Profile information, or False if not available.
         """
-        if self._backends_response and "profile" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["profile"])
             return self._backends_response[2]["profile"]
-        log.error(f"An error occurred fetching the cached Cuda profile data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda profile data: {e}")
+            return False
 
     @property
     def be_cuda_versions(self) -> dict | bool:
@@ -2287,13 +2392,14 @@ class XMRigAPI:
         Retrieves the cached Cuda versions information from the backends data.
 
         Returns:
-            dict: Bool representing versions information, or False if not available.
+            dict: Cuda versions information, or False if not available.
         """
-        if self._backends_response and "versions" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["versions"])
             return self._backends_response[2]["versions"]
-        log.error(f"An error occurred fetching the cached Cuda versions data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda versions data: {e}")
+            return False
 
     @property
     def be_cuda_runtime(self) -> str | bool:
@@ -2301,13 +2407,14 @@ class XMRigAPI:
         Retrieves the cached Cuda runtime information from the backends data.
 
         Returns:
-           str: Bool representing cuda runtime information, or False if not available.
+           str: Cuda runtime information, or False if not available.
         """
-        if self._backends_response and "cuda-runtime" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["versions"]["cuda-runtime"])
             return self._backends_response[2]["versions"]["cuda-runtime"]
-        log.error(f"An error occurred fetching the cached Cuda runtime data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda runtime data: {e}")
+            return False
 
     @property
     def be_cuda_driver(self) -> str | bool:
@@ -2315,13 +2422,14 @@ class XMRigAPI:
         Retrieves the cached Cuda driver information from the backends data.
 
         Returns:
-            str: Bool representing cuda driver information, or False if not available.
+            str: Cuda driver information, or False if not available.
         """
-        if self._backends_response and "cuda-driver" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["versions"]["cuda-driver"])
             return self._backends_response[2]["versions"]["cuda-driver"]
-        log.error(f"An error occurred fetching the cached Cuda driver data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda driver data: {e}")
+            return False
 
     @property
     def be_cuda_plugin(self) -> str | bool:
@@ -2329,27 +2437,29 @@ class XMRigAPI:
         Retrieves the cached Cuda plugin information from the backends data.
 
         Returns:
-            str: Bool representing cuda plugin information, or False if not available.
+            str: Cuda plugin information, or False if not available.
         """
-        if self._backends_response and "plugin" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["versions"]["plugin"])
             return self._backends_response[2]["versions"]["plugin"]
-        log.error(f"An error occurred fetching the cached Cuda plugin data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda plugin data: {e}")
+            return False
 
     @property
-    def be_cuda_hashrate(self) -> list | bool:
+    def be_cuda_hashrates(self) -> list | bool:
         """
-        Retrieves the cached Cuda current hashrate info from the backends data.
+        Retrieves the cached Cuda current hashrates info from the backends data.
 
         Returns:
-            list: Current hashrate info, or False if not available.
+            list: Hashrates info, or False if not available.
         """
-        if self._backends_response and "hashrate" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["hashrate"])
             return self._backends_response[2]["hashrate"]
-        log.error(f"An error occurred fetching the cached Cuda current hashrate data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda current hashrates data: {e}")
+            return False
 
     @property
     def be_cuda_hashrate_10s(self) -> int | bool:
@@ -2357,13 +2467,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current hashrate (10s) info from the backends data.
 
         Returns:
-           int: Current hashrate (10s) info, or False if not available.
+           int: Hashrate (10s) info, or False if not available.
         """
-        if self._backends_response and "hashrate" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["hashrate"][0])
             return self._backends_response[2]["hashrate"][0]
-        log.error(f"An error occurred fetching the cached Cuda current hashrate (10s) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda current hashrate (10s) data: {e}")
+            return False
 
     @property
     def be_cuda_hashrate_1m(self) -> int | bool:
@@ -2371,13 +2482,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current hashrate (1m) info from the backends data.
 
         Returns:
-            int: Current hashrate (1m) info, or False if not available.
+            int: Hashrate (1m) info, or False if not available.
         """
-        if self._backends_response and "hashrate" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["hashrate"][1])
             return self._backends_response[2]["hashrate"][1]
-        log.error(f"An error occurred fetching the cached Cuda current hashrate (1m) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda current hashrate (1m) data: {e}")
+            return False
 
     @property
     def be_cuda_hashrate_15m(self) -> int | bool:
@@ -2385,13 +2497,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current hashrate (15m) info from the backends data.
 
         Returns:
-            int: Current hashrate (15m) info, or False if not available.
+            int: Hashrate (15m) info, or False if not available.
         """
-        if self._backends_response and "hashrate" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["hashrate"][2])
             return self._backends_response[2]["hashrate"][2]
-        log.error(f"An error occurred fetching the cached Cuda current hashrate (15m) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda current hashrate (15m) data: {e}")
+            return False
 
     @property
     def be_cuda_threads(self) -> dict | bool:
@@ -2399,13 +2512,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads info from the backends data.
 
         Returns:
-            dict: Current threads info, or False if not available.
+            dict: Threads info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0])
             return self._backends_response[2]["threads"][0]
-        log.error(f"An error occurred fetching the cached Cuda threads data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads data: {e}")
+            return False
 
     @property
     def be_cuda_threads_index(self) -> int | bool:
@@ -2413,13 +2527,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads index info from the backends data.
 
         Returns:
-            int: Current threads index info, or False if not available.
+            int: Threads index info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["index"])
             return self._backends_response[2]["threads"][0]["index"]
-        log.error(f"An error occurred fetching the cached Cuda threads index data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads index data: {e}")
+            return False
 
     @property
     def be_cuda_threads_amount(self) -> int | bool:
@@ -2427,13 +2542,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads amount info from the backends data.
 
         Returns:
-            int: Current threads amount info, or False if not available.
+            int: Threads amount info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["threads"])
             return self._backends_response[2]["threads"][0]["threads"]
-        log.error(f"An error occurred fetching the cached Cuda threads amount data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads amount data: {e}")
+            return False
 
     @property
     def be_cuda_threads_blocks(self) -> int | bool:
@@ -2441,13 +2557,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads blocks info from the backends data.
 
         Returns:
-            int: Current threads blocks info, or False if not available.
+            int: Threads blocks info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["blocks"])
             return self._backends_response[2]["threads"][0]["blocks"]
-        log.error(f"An error occurred fetching the cached Cuda threads blocks data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads blocks data: {e}")
+            return False
 
     @property
     def be_cuda_threads_bfactor(self) -> int | bool:
@@ -2455,13 +2572,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads bfactor info from the backends data.
 
         Returns:
-            int: Current threads bfactor info, or False if not available.
+            int: Threads bfactor info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["bfactor"])
             return self._backends_response[2]["threads"][0]["bfactor"]
-        log.error(f"An error occurred fetching the cached Cuda threads bfactor data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads bfactor data: {e}")
+            return False
 
     @property
     def be_cuda_threads_bsleep(self) -> int | bool:
@@ -2469,13 +2587,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads bsleep info from the backends data.
 
         Returns:
-            int: Current threads bsleep info, or False if not available.
+            int: Threads bsleep info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["bsleep"])
             return self._backends_response[2]["threads"][0]["bsleep"]
-        log.error(f"An error occurred fetching the cached Cuda threads bsleep data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads bsleep data: {e}")
+            return False
 
     @property
     def be_cuda_threads_affinity(self) -> int | bool:
@@ -2483,13 +2602,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads affinity info from the backends data.
 
         Returns:
-            int: Current threads affinity info, or False if not available.
+            int: Threads affinity info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["affinity"])
             return self._backends_response[2]["threads"][0]["affinity"]
-        log.error(f"An error occurred fetching the cached Cuda threads affinity data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads affinity data: {e}")
+            return False
 
     @property
     def be_cuda_threads_dataset_host(self) -> bool | None:
@@ -2497,13 +2617,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads dataset host info from the backends data.
 
         Returns:
-            bool: Current threads dataset host info, or None if not available.
+            bool: Threads dataset host info, or None if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["dataset_host"])
             return self._backends_response[2]["threads"][0]["dataset_host"]
-        log.error(f"An error occurred fetching the cached Cuda threads dataset host data.")
-        return None
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads dataset host data: {e}")
+            return None
 
     @property
     def be_cuda_threads_hashrates(self) -> list | bool:
@@ -2511,13 +2632,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current hashrates (10s/1m/15m) from the summary data.
 
         Returns:
-            list: Current hashrates, or False if not available.
+            list: Hashrates, or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["hashrate"])
             return self._backends_response[2]["threads"][0]["hashrate"]
-        log.error(f"An error occurred fetching the cached Cuda threads hashrates data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads hashrates data: {e}")
+            return False
 
     @property
     def be_cuda_threads_hashrate_10s(self) -> int | bool:
@@ -2525,13 +2647,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current hashrate (10s) from the summary data.
 
         Returns:
-            int: Current hashrate (10s), or False if not available.
+            int: Hashrate (10s), or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["hashrate"][0])
             return self._backends_response[2]["threads"][0]["hashrate"][0]
-        log.error(f"An error occurred fetching the cached Cuda threads hashrate (10s) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads hashrate (10s) data: {e}")
+            return False
 
     @property
     def be_cuda_threads_hashrate_1m(self) -> int | bool:
@@ -2539,13 +2662,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current hashrate (1m) from the summary data.
 
         Returns:
-            int: Current hashrate (1m), or False if not available.
+            int: Hashrate (1m), or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["hashrate"][1])
             return self._backends_response[2]["threads"][0]["hashrate"][1]
-        log.error(f"An error occurred fetching the cached Cuda threads hashrates (1m) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads hashrates (1m) data: {e}")
+            return False
 
     @property
     def be_cuda_threads_hashrate_15m(self) -> int | bool:
@@ -2553,13 +2677,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current hashrate (15m) from the summary data.
 
         Returns:
-            int: Current hashrate (15m), or False if not available.
+            int: Hashrate (15m), or False if not available.
         """
-        if self._summary_response and "hashrate" in self._summary_response:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["hashrate"][2])
             return self._backends_response[2]["threads"][0]["hashrate"][2]
-        log.error(f"An error occurred fetching the cached Cuda threads hashrates (15m) data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads hashrates (15m) data: {e}")
+            return False
 
     @property
     def be_cuda_threads_name(self) -> str | bool:
@@ -2567,13 +2692,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads name info from the backends data.
 
         Returns:
-            str: Current threads name info, or False if not available.
+            str: Threads name info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["name"])
             return self._backends_response[2]["threads"][0]["name"]
-        log.error(f"An error occurred fetching the cached Cuda threads name data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads name data: {e}")
+            return False
 
     @property
     def be_cuda_threads_bus_id(self) -> str | bool:
@@ -2581,13 +2707,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads bus ID info from the backends data.
 
         Returns:
-            str: Current threads bus ID info, or False if not available.
+            str: Threads bus ID info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["bus_id"])
             return self._backends_response[2]["threads"][0]["bus_id"]
-        log.error(f"An error occurred fetching the cached Cuda threads bus ID data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads bus ID data: {e}")
+            return False
 
     @property
     def be_cuda_threads_smx(self) -> int | bool:
@@ -2595,13 +2722,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads smx info from the backends data.
 
         Returns:
-            int: Current threads smx info, or False if not available.
+            int: Threads smx info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["smx"])
             return self._backends_response[2]["threads"][0]["smx"]
-        log.error(f"An error occurred fetching the cached Cuda threads smx data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads smx data: {e}")
+            return False
 
     @property
     def be_cuda_threads_arch(self) -> int | bool:
@@ -2609,13 +2737,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads arch info from the backends data.
 
         Returns:
-            int: Current threads arch info, or False if not available.
+            int: Threads arch info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["arch"])
             return self._backends_response[2]["threads"][0]["arch"]
-        log.error(f"An error occurred fetching the cached Cuda threads arch data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads arch data: {e}")
+            return False
 
     @property
     def be_cuda_threads_global_mem(self) -> int | bool:
@@ -2623,13 +2752,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads global memory info from the backends data.
 
         Returns:
-            int: Current threads global mem info, or False if not available.
+            int: Threads global mem info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["global_mem"])
             return self._backends_response[2]["threads"][0]["global_mem"]
-        log.error(f"An error occurred fetching the cached Cuda threads global memory data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads global memory data: {e}")
+            return False
 
     @property
     def be_cuda_threads_clock(self) -> int | bool:
@@ -2637,13 +2767,14 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads clock info from the backends data.
 
         Returns:
-            int: Current threads clock info, or False if not available.
+            int: Threads clock info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["clock"])
             return self._backends_response[2]["threads"][0]["clock"]
-        log.error(f"An error occurred fetching the cached Cuda threads clock info data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads clock info data: {e}")
+            return False
 
     @property
     def be_cuda_threads_memory_clock(self) -> int | bool:
@@ -2651,10 +2782,11 @@ class XMRigAPI:
         Retrieves the cached Cuda current threads memory clock info from the backends data.
 
         Returns:
-            int: Current threads memory_clock info, or False if not available.
+            int: Threads memory clock info, or False if not available.
         """
-        if self._backends_response and "threads" in self._backends_response[2]:
+        try:
             log.debug(self._backends_response[2]["threads"][0]["memory_clock"])
             return self._backends_response[2]["threads"][0]["memory_clock"]
-        log.error(f"An error occurred fetching the cached Cuda threads memory clock data.")
-        return False
+        except Exception as e:
+            log.error(f"An error occurred fetching the cached Cuda threads memory clock data: {e}")
+            return False
