@@ -1325,12 +1325,12 @@ class XMRigAPI:
             return False
 
     @property
-    def sum_hashrate_10s(self) -> int | bool:
+    def sum_hashrate_10s(self) -> float | bool:
         """
         Retrieves the cached current hashrate (10s) from the summary data.
 
         Returns:
-            int: Current hashrate (10s), or False if not available.
+            float: Current hashrate (10s), or False if not available.
         """
         try:
             log.debug(self._summary_response["hashrate"]["total"][0])
@@ -1340,12 +1340,12 @@ class XMRigAPI:
             return False
 
     @property
-    def sum_hashrate_1m(self) -> int | bool:
+    def sum_hashrate_1m(self) -> float | bool:
         """
         Retrieves the cached current hashrate (1m) from the summary data.
 
         Returns:
-            int: Current hashrate (1m), or False if not available.
+            float: Current hashrate (1m), or False if not available.
         """
         try:
             log.debug(self._summary_response["hashrate"]["total"][1])
@@ -1355,12 +1355,12 @@ class XMRigAPI:
             return False
 
     @property
-    def sum_hashrate_15m(self) -> int | bool:
+    def sum_hashrate_15m(self) -> float | bool:
         """
         Retrieves the cached current hashrate (15m) from the summary data.
 
         Returns:
-            int: Current hashrate (15m), or False if not available.
+            float: Current hashrate (15m), or False if not available.
         """
         try:
             log.debug(self._summary_response["hashrate"]["total"][2])
@@ -1370,12 +1370,12 @@ class XMRigAPI:
             return False
 
     @property
-    def sum_hashrate_highest(self) -> int | bool:
+    def sum_hashrate_highest(self) -> float | bool:
         """
         Retrieves the cached current hashrate (highest) from the summary data.
 
         Returns:
-            int: Current hashrate (highest), or False if not available.
+            float: Current hashrate (highest), or False if not available.
         """
         try:
             log.debug(self._summary_response["hashrate"]["highest"])
@@ -1589,12 +1589,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_cpu_hashrates(self) -> int | bool:
+    def be_cpu_hashrates(self) -> list | bool:
         """
         Retrieves the cached CPU hashrates information from the backends data.
 
         Returns:
-            int: Hashrates information, or False if not available.
+            list: Hashrates information, or False if not available.
         """
         try:
             log.debug(self._backends_response[0]["hashrate"])
@@ -1604,12 +1604,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_cpu_hashrate_10s(self) -> int | bool:
+    def be_cpu_hashrate_10s(self) -> float | bool:
         """
         Retrieves the cached CPU hashrate (10s) information from the backends data.
 
         Returns:
-            int: Hashrate (10s) information, or False if not available.
+            float: Hashrate (10s) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[0]["hashrate"][0])
@@ -1619,12 +1619,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_cpu_hashrate_1m(self) -> int | bool:
+    def be_cpu_hashrate_1m(self) -> float | bool:
         """
         Retrieves the cached CPU hashrate (1m) information from the backends data.
 
         Returns:
-            int: Hashrate (1m) information, or False if not available.
+            float: Hashrate (1m) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[0]["hashrate"][1])
@@ -1634,12 +1634,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_cpu_hashrate_15m(self) -> int | bool:
+    def be_cpu_hashrate_15m(self) -> float | bool:
         """
         Retrieves the cached CPU hashrate (15m) information from the backends data.
 
         Returns:
-            int: Hashrate (15m) information, or False if not available.
+            float: Hashrate (15m) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[0]["hashrate"][2])
@@ -1952,12 +1952,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_opencl_hashrate_10s(self) -> int | bool:
+    def be_opencl_hashrate_10s(self) -> float | bool:
         """
         Retrieves the cached OpenCL hashrate (10s) information from the backends data.
 
         Returns:
-            int: Hashrate (10s) information, or False if not available.
+            float: Hashrate (10s) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[1]["hashrate"][0])
@@ -1967,12 +1967,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_opencl_hashrate_1m(self) -> int | bool:
+    def be_opencl_hashrate_1m(self) -> float | bool:
         """
         Retrieves the cached OpenCL hashrate (1m) information from the backends data.
 
         Returns:
-            int: Hashrate (1m) information, or False if not available.
+            float: Hashrate (1m) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[1]["hashrate"][1])
@@ -1982,12 +1982,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_opencl_hashrate_15m(self) -> int | bool:
+    def be_opencl_hashrate_15m(self) -> float | bool:
         """
         Retrieves the cached OpenCL hashrate (15m) information from the backends data.
 
         Returns:
-            int: Hashrate (15m) information, or False if not available.
+            float: Hashrate (15m) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[1]["hashrate"][2])
@@ -2117,12 +2117,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_opencl_threads_hashrates_10s(self) -> int | bool:
+    def be_opencl_threads_hashrates_10s(self) -> float | bool:
         """
         Retrieves the cached OpenCL threads hashrates (10s) information from the backends data.
 
         Returns:
-            int: Threads hashrates (10s) information, or False if not available.
+            float: Threads hashrates (10s) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[1]["threads"][0]["hashrate"][0])
@@ -2132,12 +2132,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_opencl_threads_hashrates_1m(self) -> int | bool:
+    def be_opencl_threads_hashrates_1m(self) -> float | bool:
         """
         Retrieves the cached OpenCL threads hashrates (1m) information from the backends data.
 
         Returns:
-            int: Threads hashrates (1m) information, or False if not available.
+            float: Threads hashrates (1m) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[1]["threads"][0]["hashrate"][1])
@@ -2147,12 +2147,12 @@ class XMRigAPI:
             return False
     
     @property
-    def be_opencl_threads_hashrates_15m(self) -> int | bool:
+    def be_opencl_threads_hashrates_15m(self) -> float | bool:
         """
         Retrieves the cached OpenCL threads hashrates (15m) information from the backends data.
 
         Returns:
-            int: Threads hashrates (15m) information, or False if not available.
+            float: Threads hashrates (15m) information, or False if not available.
         """
         try:
             log.debug(self._backends_response[1]["threads"][0]["hashrate"][2])
@@ -2462,12 +2462,12 @@ class XMRigAPI:
             return False
 
     @property
-    def be_cuda_hashrate_10s(self) -> int | bool:
+    def be_cuda_hashrate_10s(self) -> float | bool:
         """
         Retrieves the cached Cuda current hashrate (10s) info from the backends data.
 
         Returns:
-           int: Hashrate (10s) info, or False if not available.
+           float: Hashrate (10s) info, or False if not available.
         """
         try:
             log.debug(self._backends_response[2]["hashrate"][0])
@@ -2477,12 +2477,12 @@ class XMRigAPI:
             return False
 
     @property
-    def be_cuda_hashrate_1m(self) -> int | bool:
+    def be_cuda_hashrate_1m(self) -> float | bool:
         """
         Retrieves the cached Cuda current hashrate (1m) info from the backends data.
 
         Returns:
-            int: Hashrate (1m) info, or False if not available.
+            float: Hashrate (1m) info, or False if not available.
         """
         try:
             log.debug(self._backends_response[2]["hashrate"][1])
@@ -2492,12 +2492,12 @@ class XMRigAPI:
             return False
 
     @property
-    def be_cuda_hashrate_15m(self) -> int | bool:
+    def be_cuda_hashrate_15m(self) -> float | bool:
         """
         Retrieves the cached Cuda current hashrate (15m) info from the backends data.
 
         Returns:
-            int: Hashrate (15m) info, or False if not available.
+            float: Hashrate (15m) info, or False if not available.
         """
         try:
             log.debug(self._backends_response[2]["hashrate"][2])
@@ -2642,12 +2642,12 @@ class XMRigAPI:
             return False
 
     @property
-    def be_cuda_threads_hashrate_10s(self) -> int | bool:
+    def be_cuda_threads_hashrate_10s(self) -> float | bool:
         """
         Retrieves the cached Cuda current hashrate (10s) from the summary data.
 
         Returns:
-            int: Hashrate (10s), or False if not available.
+            float: Hashrate (10s), or False if not available.
         """
         try:
             log.debug(self._backends_response[2]["threads"][0]["hashrate"][0])
@@ -2657,12 +2657,12 @@ class XMRigAPI:
             return False
 
     @property
-    def be_cuda_threads_hashrate_1m(self) -> int | bool:
+    def be_cuda_threads_hashrate_1m(self) -> float | bool:
         """
         Retrieves the cached Cuda current hashrate (1m) from the summary data.
 
         Returns:
-            int: Hashrate (1m), or False if not available.
+            float: Hashrate (1m), or False if not available.
         """
         try:
             log.debug(self._backends_response[2]["threads"][0]["hashrate"][1])
@@ -2672,12 +2672,12 @@ class XMRigAPI:
             return False
 
     @property
-    def be_cuda_threads_hashrate_15m(self) -> int | bool:
+    def be_cuda_threads_hashrate_15m(self) -> float | bool:
         """
         Retrieves the cached Cuda current hashrate (15m) from the summary data.
 
         Returns:
-            int: Hashrate (15m), or False if not available.
+            float: Hashrate (15m), or False if not available.
         """
         try:
             log.debug(self._backends_response[2]["threads"][0]["hashrate"][2])
