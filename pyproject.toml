@@ -1,14 +1,17 @@
 [tool.poetry]
 name = "xmrig"
-version = "1.1.0"
+version = "1.1.2"
 description = "A python package for easy in line interfacing with XMRig Miner HTTP API"
-authors = ["CoulterStutz <coultercash@gmail.com>"]
+authors = ["CoulterStutz <coultercash@gmail.com>", "hreikin <hreikin@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.32.3"
 
+
+[tool.poetry.group.dev.dependencies]
+twine = "^5.1.1"
 
 [build-system]
 requires = ["poetry-core"]
